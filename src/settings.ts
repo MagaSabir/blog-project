@@ -1,9 +1,11 @@
-import express, {Request, Response} from "express";
+import {config} from "dotenv";
+config()
 
-const app = express()
-
-app.use(express.json())
-
-app.get('/', (req:Request, res:Response) => {
-    res.send(200).json({version: "2:0"})
-})
+export const SETTINGS = {
+    PORT: process.env.PORT || 3002,
+    PATH: {
+        blogs: '/blogs',
+        posts: '/posts',
+        cleanDB: '/testing/all-data'
+    }
+}
