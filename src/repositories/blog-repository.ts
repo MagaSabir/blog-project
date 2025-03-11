@@ -6,7 +6,7 @@ export const blogRepository = {
     },
 
     findBlogById(id: string) {
-        let blog  = db.blogs.find(v => v.id === id)
+        let blog = db.blogs.find(v => v.id === id)
         return blog
     },
 
@@ -21,13 +21,13 @@ export const blogRepository = {
         return newBlog
     },
 
-    updateBlog(id:any, req:any) {
+    updateBlog(id: any, req: any) {
         // const blog = db.blogs.find(v => v.id === id)
         // if(blog) {
         //     blog.id
         // }
         db.blogs = db.blogs.map(p => {
-            if(p.id === id) {
+            if (p.id === id) {
                 p.name = req.name;
                 p.description = req.description;
                 p.websiteUrl = req.websiteUrl
@@ -35,5 +35,13 @@ export const blogRepository = {
             return p
         })
 
+    },
+
+    deleteById(id: string): any {
+        const index = db.blogs.findIndex(v => v.id === id)
+        if(index !== -1) {
+            return db.blogs.splice(index, 1)
+        }
+        return null
     }
 }
