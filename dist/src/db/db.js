@@ -9,8 +9,8 @@ exports.db = {
             websiteUrl: "string"
         }],
     posts: [{
-            id: "string",
-            title: "string",
+            id: "1",
+            title: 'string',
             shortDescription: "string",
             content: "string",
             blogId: "string",

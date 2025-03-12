@@ -26,13 +26,13 @@ export const blogRepository = {
         // if(blog) {
         //     blog.id
         // }
-        db.blogs = db.blogs.map(p => {
-            if (p.id === id) {
-                p.name = req.name;
-                p.description = req.description;
-                p.websiteUrl = req.websiteUrl
+        db.blogs = db.blogs.map(b => {
+            if (b.id === id) {
+                b.name = req.name;
+                b.description = req.description;
+                b.websiteUrl = req.websiteUrl
             }
-            return p
+            return b
         })
 
     },

@@ -21,9 +21,9 @@ exports.blogRoutes
     }
 })
     .post('/', blogValidator_1.nameValidator, blogValidator_1.descriptionValidator, blogValidator_1.websiteUrlValidator, (req, res) => {
-    const error = (0, express_validator_1.validationResult)(req).formatWith(error => ({
+    const error = (0, express_validator_1.validationResult)(req).formatWith((error) => ({
         field: error.type,
-        message: error.msg
+        message: error.msg,
     })).array({ onlyFirstError: true });
     if (error.length) {
         res.status(400).send({ errorMessages: error });

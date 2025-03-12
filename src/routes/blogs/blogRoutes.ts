@@ -6,10 +6,13 @@ import {
     nameValidator,
     websiteUrlValidator
 } from "../../validator/blogValidator";
-import {validationResult} from "express-validator";
+import { validationResult} from "express-validator";
+import {authMiddleware} from "../../../middlewares/authMiddleware";
+
 
 export const blogRoutes = Router()
-
+export let blogId:string
+export let blogName:string
 blogRoutes
   .get('/', (req: Request, res: Response) => {
     res.status(200).send(blogRepository.findBlog()
@@ -25,18 +28,21 @@ blogRoutes
     }
 })
 
-.post('/', nameValidator, descriptionValidator, websiteUrlValidator, (req: Request, res: Response) => {
-    const error = validationResult(req).formatWith(error => ({
-            field: error.type,
-            message: error.msg
+.post('/',nameValidator, descriptionValidator, websiteUrlValidator, (req: Request, res: Response) => {
+    const error= validationResult(req).formatWith((error)  => ({
+        field: error.type,
+        message: error.msg,
     })).array({onlyFirstError: true})
 
     if(error.length) {
         res.status(400).send({errorMessages:error})
     }
     else {
-        res.status(201).send(blogRepository.createBlog(req.body))
+        blogRepository.createBlog(req.body)
+        res.sendStatus(201)
     }
+    blogId = blogRepository.createBlog(req.body).id
+    blogName = blogRepository.createBlog(req.body).name
 })
 
 .put('/:id',nameValidator, descriptionValidator, websiteUrlValidator, (req: Request, res: Response) => {

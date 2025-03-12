@@ -1,4 +1,6 @@
- type blogDbType = {
+import {strict} from "node:assert";
+
+type blogDbType = {
     blogs: dbBlogType[],
     posts: dbPostType[]
 }
@@ -12,12 +14,13 @@
 
 type dbPostType = {
     id: string,
-    title: string,
+    title: string
     shortDescription: string,
     content: string,
     blogId: string
     blogName?: string
 }
+
 
 export const db: blogDbType = {
     blogs: [{
@@ -27,8 +30,8 @@ export const db: blogDbType = {
         websiteUrl: "string"
     }],
     posts: [{
-        id: "string",
-        title: "string",
+        id: "1",
+        title: 'string',
         shortDescription: "string",
         content: "string",
         blogId: "string",
