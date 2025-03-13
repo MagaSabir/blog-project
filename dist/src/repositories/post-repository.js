@@ -33,9 +33,11 @@ exports.postRepository = {
         return null;
     },
     updatePost(id, req) {
+        let blogId = db_1.db.blogs.map(el => el.id);
+        let blogName = db_1.db.blogs.find((el) => el.id === blogId[blogId.length - 1]);
         const index = db_1.db.posts.findIndex(p => p.id === id);
         if (index !== -1) {
-            db_1.db.posts = db_1.db.posts.map(el => el.id === id ? Object.assign(Object.assign(Object.assign({}, el), req), { blogName: ';' }) : el);
+            db_1.db.posts = db_1.db.posts.map(el => el.id === id ? Object.assign(Object.assign(Object.assign({}, el), req), { blogName: blogName === null || blogName === void 0 ? void 0 : blogName.name }) : el);
             return db_1.db.posts[index];
         }
         return null;
