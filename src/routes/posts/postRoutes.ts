@@ -37,8 +37,8 @@ postsRoutes
         if (error.length) {
             res.status(400).send({errorMessages: error})
         } else {
-            postRepository.createPost(req.body)
-            res.sendStatus(201)
+
+            res.status(201).send(postRepository.createPost(req.body))
         }
     })
 

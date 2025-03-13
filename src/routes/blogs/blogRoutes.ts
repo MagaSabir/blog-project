@@ -38,8 +38,7 @@ blogRoutes
             res.status(400).send({errorMessages: error})
             return;
         } else {
-            blogRepository.createBlog(req.body)
-            res.sendStatus(201)
+            res.status(201).send(blogRepository.createBlog(req.body))
             return
         }
         blogId = blogRepository.createBlog(req.body).id
