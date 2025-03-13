@@ -1,30 +1,29 @@
-import {NextFunction, Request, Response} from "express";
+import {Request, Response, NextFunction} from "express";
 import {SETTINGS} from "../src/settings";
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    const auth = req.headers['authorization'] as string // 'Basic xxxx'
-    console.log(auth)
+    const auth = req.headers['authorization']
+
     if (!auth) {
-        res
-            .status(401)
-            .json({})
-        return
-    }
-    const buff = Buffer.from(auth.slice(6), 'base64')
-    console.log(buff)
-    const decodedAuth = buff.toString('utf8')
-    console.log(decodedAuth)
-
-    const buff2 = Buffer.from(SETTINGS.ADMIN_AUTH, 'utf8')
-    const codedAuth = buff2.toString('base64')
-
-    // if (decodedAuth === ADMIN_AUTH || auth.slice(0, 5) !== 'Basic ') {
-    if (auth.slice(6) !== codedAuth || auth.slice(0, 5) !== 'Basic ') {
-        res
-            .status(401)
-            .json({})
+        res.sendStatus(401)
         return
     }
 
+    const [authType, token] = auth.split(' ')
+
+    const [login, password] = SETTINGS.ADMIN_AUTH.split(':')
+
+    if (authType !== 'Basic') {
+        res.sendStatus(401)
+        return;
+    }
+
+    const adminToken = Buffer.from(token, 'base64').toString()
+    const [tokenLogin, tokenPassword] = adminToken.split(':')
+
+    if (login !== tokenLogin || password !== tokenPassword) {
+        res.sendStatus(401)
+        return;
+    }
     next()
 }

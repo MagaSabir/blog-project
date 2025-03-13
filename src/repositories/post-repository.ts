@@ -1,6 +1,5 @@
 import {db} from "../db/db";
 import {blogId, blogName} from "../routes/blogs/blogRoutes";
-import {req} from "../../__tests__/test-helpers";
 
 export const postRepository = {
     findPost() {
@@ -11,7 +10,7 @@ export const postRepository = {
         return post
     },
 
-    createPost(req:any) {
+    createPost(req: any) {
         const newPost = {
             id: Math.floor(Date.now() + Math.random()).toString(),
             title: req.title,
@@ -28,15 +27,15 @@ export const postRepository = {
 
     deleteById(id: string): any {
         const index = db.posts.findIndex(v => v.id === id)
-        if(index !== -1) {
+        if (index !== -1) {
             return db.posts.splice(index, 1)
         }
         return null
     },
 
     updatePost(id: string, req: any): any {
-        db.posts = db.posts.map(p => {
-            if(p.id === id) {
+        db.posts.map(p => {
+            if (p.id === id) {
                 p.title = req.title;
                 p.shortDescription = req.shortDescription;
                 p.content = req.content

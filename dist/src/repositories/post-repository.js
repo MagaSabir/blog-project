@@ -32,7 +32,7 @@ exports.postRepository = {
         return null;
     },
     updatePost(id, req) {
-        db_1.db.posts = db_1.db.posts.map(p => {
+        db_1.db.posts.map(p => {
             if (p.id === id) {
                 p.title = req.title;
                 p.shortDescription = req.shortDescription;

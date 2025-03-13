@@ -25,7 +25,7 @@ exports.blogRepository = {
         // if(blog) {
         //     blog.id
         // }
-        db_1.db.blogs = db_1.db.blogs.map(b => {
+        db_1.db.blogs.map(b => {
             if (b.id === id) {
                 b.name = req.name;
                 b.description = req.description;

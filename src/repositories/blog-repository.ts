@@ -26,12 +26,13 @@ export const blogRepository = {
         // if(blog) {
         //     blog.id
         // }
-        db.blogs = db.blogs.map(b => {
+        db.blogs.map(b => {
             if (b.id === id) {
                 b.name = req.name;
                 b.description = req.description;
                 b.websiteUrl = req.websiteUrl
             }
+
             return b
         })
 
@@ -39,7 +40,7 @@ export const blogRepository = {
 
     deleteById(id: string): any {
         const index = db.blogs.findIndex(v => v.id === id)
-        if(index !== -1) {
+        if (index !== -1) {
             return db.blogs.splice(index, 1)
         }
         return null

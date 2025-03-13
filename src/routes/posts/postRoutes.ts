@@ -2,38 +2,39 @@ import {Router, Request, Response} from "express";
 import {postRepository} from "../../repositories/post-repository";
 import {validationResult} from "express-validator";
 import {contentValidator, shortDescriptionValidator, titleValidator} from "../../validator/postValidator";
+import {authMiddleware} from "../../../middlewares/authMiddleware";
 
 export const postsRoutes = Router()
 
 postsRoutes
-    .get('/',  (req:Request, res: Response) => {
+    .get('/', (req: Request, res: Response) => {
         res.status(200).send(postRepository.findPost())
+
     })
-    .get('/:id', (req:Request, res:Response) => {
+    .get('/:id', (req: Request, res: Response) => {
         const post = postRepository.findPostById(req.params.id)
-        if(post) {
+        if (post) {
             res.status(200).send(post)
-        }
-        else {
+        } else {
             res.sendStatus(404)
         }
     })
 
-    .delete('/:id', (req:Request, res:Response) => {
+    .delete('/:id', authMiddleware, (req: Request, res: Response) => {
         const blog = postRepository.deleteById(req.params.id)
-        if(blog) {
+        if (blog) {
             res.sendStatus(204)
         }
         res.sendStatus(404)
     })
 
-    .post('/',titleValidator, shortDescriptionValidator, contentValidator, (req:Request, res:Response) => {
+    .post('/', titleValidator, authMiddleware, shortDescriptionValidator, contentValidator, (req: Request, res: Response) => {
         const error = validationResult(req).formatWith((e) => ({
             field: e.type,
             message: e.msg
-        })).array({onlyFirstError:true})
+        })).array({onlyFirstError: true})
 
-        if(error.length) {
+        if (error.length) {
             res.status(400).send({errorMessages: error})
         } else {
             postRepository.createPost(req.body)
@@ -41,13 +42,13 @@ postsRoutes
         }
     })
 
-    .put('/:id', titleValidator, shortDescriptionValidator, contentValidator, (req: Request, res: Response) => {
+    .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, (req: Request, res: Response) => {
         const error = validationResult(req).formatWith((e) => ({
             field: e.type,
             message: e.msg
         })).array({onlyFirstError: true})
 
-        if(error.length) {
+        if (error.length) {
             res.status(400).send({errorMessage: error})
         } else {
             postRepository.updatePost(req.params.id, req.body)

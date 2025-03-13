@@ -6,13 +6,13 @@ import {db} from "../src/db/db";
 const newBlog = [
     {
         id: Math.floor(Date.now() + Math.random()).toString(),
-        name: 'фыва',
+        name: 'name',
         description: 12,
         websiteUrl: "https://blabla.com"
     },
     {
         id: Math.floor(Date.now() + Math.random()).toString(),
-        name: 'as',
+        name: 'ssss',
         description: 'string',
         websiteUrl: "https://blabla.com"
     }
