@@ -8,11 +8,11 @@ export const postsRoutes = Router()
 
 postsRoutes
     .get('/', (req: Request, res: Response) => {
-        res.status(200).send(postRepository.findPost(req.params.id, req.body))
+        res.status(200).send(postRepository.findPost())
 
     })
     .get('/:id', (req: Request, res: Response) => {
-        const post = postRepository.findPostById(req.params.id, req.body)
+        const post = postRepository.findPostById(req.params.id)
         if (post) {
             res.status(200).send(post)
         } else {

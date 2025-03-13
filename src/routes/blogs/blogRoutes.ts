@@ -29,7 +29,7 @@ export const blogRoutes = Router()
 
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,
-            field: e.type,
+            field: e.path,
         })).array({onlyFirstError: true})
 
         if (error.length) {
@@ -46,7 +46,7 @@ export const blogRoutes = Router()
         const updatedBlog = blogRepository.updateBlog(req.params.id, req.body)
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,
-            field: e.type,
+            field: e.path,
         })).array({onlyFirstError: true})
         if (error.length) {
             res.status(400).send({errorMessages: error})
