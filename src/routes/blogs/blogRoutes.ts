@@ -25,7 +25,7 @@ export const blogRoutes = Router()
         }
     })
 
-    .post('/', authMiddleware, nameValidator, descriptionValidator, websiteUrlValidator, (req: Request, res: Response) => {
+    .post('/', authMiddleware, websiteUrlValidator, descriptionValidator, nameValidator, (req: Request, res: Response) => {
 
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,
@@ -42,7 +42,7 @@ export const blogRoutes = Router()
 
     })
 
-    .put('/:id', authMiddleware, nameValidator, descriptionValidator, websiteUrlValidator, (req: Request, res: Response) => {
+    .put('/:id', authMiddleware, websiteUrlValidator, descriptionValidator, websiteUrlValidator, nameValidator, (req: Request, res: Response) => {
         const updatedBlog = blogRepository.updateBlog(req.params.id, req.body)
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,
