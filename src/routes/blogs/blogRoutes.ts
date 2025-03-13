@@ -11,9 +11,6 @@ import {authMiddleware} from "../../../middlewares/authMiddleware";
 
 
 export const blogRoutes = Router()
-export let blogId: string
-export let blogName: string
-blogRoutes
 
     .get('/', (req: Request, res: Response) => {
         res.status(200).send(blogRepository.findBlog()
@@ -29,9 +26,10 @@ blogRoutes
     })
 
     .post('/', authMiddleware, nameValidator, descriptionValidator, websiteUrlValidator, (req: Request, res: Response) => {
+
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,
-            field: e.path,
+            field: e.type,
         })).array({onlyFirstError: true})
 
         if (error.length) {
@@ -41,22 +39,27 @@ blogRoutes
             res.status(201).send(blogRepository.createBlog(req.body))
             return
         }
-        blogId = blogRepository.createBlog(req.body).id
-        blogName = blogRepository.createBlog(req.body).name
+
     })
 
     .put('/:id', authMiddleware, nameValidator, descriptionValidator, websiteUrlValidator, (req: Request, res: Response) => {
+        const updatedBlog = blogRepository.updateBlog(req.params.id, req.body)
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,
-            field: e.path,
+            field: e.type,
         })).array({onlyFirstError: true})
-
         if (error.length) {
             res.status(400).send({errorMessages: error})
             return
-        } else {
+        }
+
+        if (updatedBlog) {
             blogRepository.updateBlog(req.params.id, req.body)
             res.sendStatus(204)
+            return;
+        } else {
+            res.sendStatus(404)
+            return;
         }
 
     })

@@ -20,22 +20,14 @@ export const blogRepository = {
         db.blogs.push(newBlog)
         return newBlog
     },
-
     updateBlog(id: any, req: any) {
-        // const blog = db.blogs.find(v => v.id === id)
-        // if(blog) {
-        //     blog.id
-        // }
-        db.blogs.map(b => {
-            if (b.id === id) {
-                b.name = req.name;
-                b.description = req.description;
-                b.websiteUrl = req.websiteUrl
-            }
 
-            return b
-        })
-
+        const index = db.blogs.findIndex(p => p.id === id)
+        if (index !== -1) {
+            db.blogs = db.blogs.map(el => el.id === id ? {...el, ...req} : el)
+            return db.blogs[index]
+        }
+        return null
     },
 
     deleteById(id: string): any {

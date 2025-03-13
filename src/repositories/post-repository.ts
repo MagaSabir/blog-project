@@ -1,5 +1,4 @@
 import {db} from "../db/db";
-import {blogId, blogName} from "../routes/blogs/blogRoutes";
 
 export const postRepository = {
     findPost() {
@@ -11,16 +10,14 @@ export const postRepository = {
     },
 
     createPost(req: any) {
-        const newPost = {
+        const newPost: any = {
             id: Math.floor(Date.now() + Math.random()).toString(),
             title: req.title,
             shortDescription: req.shortDescription,
             content: req.content,
-            blogId: blogId,
-            blogName: blogName
+            blogId: 'd',
         }
         db.posts.push(newPost)
-        console.log(blogId)
         return newPost
 
     },
@@ -34,14 +31,11 @@ export const postRepository = {
     },
 
     updatePost(id: string, req: any): any {
-        db.posts.map(p => {
-            if (p.id === id) {
-                p.title = req.title;
-                p.shortDescription = req.shortDescription;
-                p.content = req.content
-                p.blogId = blogId
-            }
-            return p
-        })
+        const index = db.posts.findIndex(p => p.id === id)
+        if (index !== -1) {
+            db.posts = db.posts.map(el => el.id === id ? {...el, ...req, blogName: ';'} : el)
+            return db.posts[index]
+        }
+        return null
     }
 }

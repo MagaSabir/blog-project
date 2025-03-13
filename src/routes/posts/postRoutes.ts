@@ -8,11 +8,11 @@ export const postsRoutes = Router()
 
 postsRoutes
     .get('/', (req: Request, res: Response) => {
-        res.status(200).send(postRepository.findPost())
+        res.status(200).send(postRepository.findPost(req.params.id, req.body))
 
     })
     .get('/:id', (req: Request, res: Response) => {
-        const post = postRepository.findPostById(req.params.id)
+        const post = postRepository.findPostById(req.params.id, req.body)
         if (post) {
             res.status(200).send(post)
         } else {
@@ -31,7 +31,7 @@ postsRoutes
     .post('/', titleValidator, authMiddleware, shortDescriptionValidator, contentValidator, (req: Request, res: Response) => {
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,
-            field: e.path,
+            field: e.path
         })).array({onlyFirstError: true})
 
         if (error.length) {
@@ -43,15 +43,22 @@ postsRoutes
     })
 
     .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, (req: Request, res: Response) => {
+        const updatedPost = postRepository.updatePost(req.params.id, req.body)
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,
-            field: e.path,
+            field: e.path
         })).array({onlyFirstError: true})
+        console.log(postRepository.updatePost(req.params.id, req.body))
 
         if (error.length) {
             res.status(400).send({errorMessage: error})
-        } else {
+            return;
+        }
+        if (updatedPost) {
             postRepository.updatePost(req.params.id, req.body)
             res.sendStatus(204)
+            return
+        } else {
+            res.sendStatus(404)
         }
     })

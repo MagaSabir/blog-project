@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postRepository = void 0;
 const db_1 = require("../db/db");
-const blogRoutes_1 = require("../routes/blogs/blogRoutes");
 exports.postRepository = {
     findPost() {
         return db_1.db.posts;
@@ -17,11 +16,9 @@ exports.postRepository = {
             title: req.title,
             shortDescription: req.shortDescription,
             content: req.content,
-            blogId: blogRoutes_1.blogId,
-            blogName: blogRoutes_1.blogName
+            blogId: 'd',
         };
         db_1.db.posts.push(newPost);
-        console.log(blogRoutes_1.blogId);
         return newPost;
     },
     deleteById(id) {
@@ -32,14 +29,11 @@ exports.postRepository = {
         return null;
     },
     updatePost(id, req) {
-        db_1.db.posts.map(p => {
-            if (p.id === id) {
-                p.title = req.title;
-                p.shortDescription = req.shortDescription;
-                p.content = req.content;
-                p.blogId = blogRoutes_1.blogId;
-            }
-            return p;
-        });
+        const index = db_1.db.posts.findIndex(p => p.id === id);
+        if (index !== -1) {
+            db_1.db.posts = db_1.db.posts.map(el => el.id === id ? Object.assign(Object.assign(Object.assign({}, el), req), { blogName: ';' }) : el);
+            return db_1.db.posts[index];
+        }
+        return null;
     }
 };

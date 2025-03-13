@@ -21,18 +21,12 @@ exports.blogRepository = {
         return newBlog;
     },
     updateBlog(id, req) {
-        // const blog = db.blogs.find(v => v.id === id)
-        // if(blog) {
-        //     blog.id
-        // }
-        db_1.db.blogs.map(b => {
-            if (b.id === id) {
-                b.name = req.name;
-                b.description = req.description;
-                b.websiteUrl = req.websiteUrl;
-            }
-            return b;
-        });
+        const index = db_1.db.blogs.findIndex(p => p.id === id);
+        if (index !== -1) {
+            db_1.db.blogs = db_1.db.blogs.map(el => el.id === id ? Object.assign(Object.assign({}, el), req) : el);
+            return db_1.db.blogs[index];
+        }
+        return null;
     },
     deleteById(id) {
         const index = db_1.db.blogs.findIndex(v => v.id === id);
