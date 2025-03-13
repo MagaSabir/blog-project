@@ -1,7 +1,7 @@
 import {Router, Request, Response, NextFunction} from "express";
 import {postRepository} from "../../repositories/post-repository";
 import {validationResult} from "express-validator";
-import {blogId, contentValidator, shortDescriptionValidator, titleValidator} from "../../validator/postValidator";
+import {contentValidator, shortDescriptionValidator, titleValidator} from "../../validator/postValidator";
 import {authMiddleware} from "../../../middlewares/authMiddleware";
 
 
@@ -30,7 +30,7 @@ postsRoutes
         res.sendStatus(404)
     })
 
-    .post('/', titleValidator, authMiddleware, shortDescriptionValidator, contentValidator, blogId, (req: Request, res: Response) => {
+    .post('/', titleValidator, authMiddleware, shortDescriptionValidator, contentValidator, (req: Request, res: Response) => {
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,
             field: e.path

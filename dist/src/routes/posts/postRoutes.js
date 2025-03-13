@@ -27,7 +27,7 @@ exports.postsRoutes
     }
     res.sendStatus(404);
 })
-    .post('/', postValidator_1.titleValidator, authMiddleware_1.authMiddleware, postValidator_1.shortDescriptionValidator, postValidator_1.contentValidator, postValidator_1.blogId, (req, res) => {
+    .post('/', postValidator_1.titleValidator, authMiddleware_1.authMiddleware, postValidator_1.shortDescriptionValidator, postValidator_1.contentValidator, (req, res) => {
     const error = (0, express_validator_1.validationResult)(req).formatWith((e) => ({
         message: e.msg,
         field: e.path

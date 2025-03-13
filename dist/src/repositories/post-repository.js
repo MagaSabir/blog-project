@@ -12,15 +12,17 @@ exports.postRepository = {
     },
     createPost(req) {
         let idbl = db_1.db.blogs.map(el => el.id);
-        let blogName = db_1.db.blogs.find((el) => el.id === idbl[idbl.length - 1]);
+        let blogName = db_1.db.blogs.map(el => el.name);
+        // let blogName = db.blogs.find((el) => el.id === idbl[idbl.length - 1])
         const newPost = {
             id: Math.floor(Date.now() + Math.random()).toString(),
             title: req.title,
             shortDescription: req.shortDescription,
             content: req.content,
-            blogId: idbl[idbl.length - 1],
-            blogName: blogName === null || blogName === void 0 ? void 0 : blogName.name
+            blogId: idbl.toString(),
+            blogName: blogName.at(-1).toString()
         };
+        console.log(idbl.toString());
         db_1.db.posts.push(newPost);
         return newPost;
     },
