@@ -35,7 +35,7 @@ postsRoutes
         })).array({onlyFirstError: true})
 
         if (error.length) {
-            res.status(400).send({errorMessages: error})
+            res.status(400).send({errorsMessages: error})
         } else {
 
             res.status(201).send(postRepository.createPost(req.body))
@@ -51,7 +51,7 @@ postsRoutes
         console.log(postRepository.updatePost(req.params.id, req.body))
 
         if (error.length) {
-            res.status(400).send({errorMessage: error})
+            res.status(400).send({errorsMessage: error})
             return;
         }
         if (updatedPost) {

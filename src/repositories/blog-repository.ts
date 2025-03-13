@@ -34,8 +34,8 @@ export const blogRepository = {
         const index = db.blogs.findIndex(v => v.id === id)
 
         if (index !== -1) {
-            db.blogs.map((el => el.id === id ? db.blogs.splice(index, 1) : null))
-            // return db.blogs.splice(index, 1)
+            // db.blogs.map((el => el.id === id ? db.blogs.splice(index, 1) : null))
+            return db.blogs.splice(index, 1)
         }
         return null
     }

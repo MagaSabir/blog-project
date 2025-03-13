@@ -33,7 +33,7 @@ export const blogRoutes = Router()
         })).array({onlyFirstError: true})
 
         if (error.length) {
-            res.status(400).send({errorMessages: error})
+            res.status(400).send({errorsMessages: error})
             return;
         } else {
             res.status(201).send(blogRepository.createBlog(req.body))
@@ -49,7 +49,7 @@ export const blogRoutes = Router()
             field: e.path,
         })).array({onlyFirstError: true})
         if (error.length) {
-            res.status(400).send({errorMessages: error})
+            res.status(400).send({errorsMessages: error})
             return
         }
 

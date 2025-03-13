@@ -31,8 +31,8 @@ exports.blogRepository = {
     deleteById(id) {
         const index = db_1.db.blogs.findIndex(v => v.id === id);
         if (index !== -1) {
-            db_1.db.blogs.map((el => el.id === id ? db_1.db.blogs.splice(index, 1) : null));
-            // return db.blogs.splice(index, 1)
+            // db.blogs.map((el => el.id === id ? db.blogs.splice(index, 1) : null))
+            return db_1.db.blogs.splice(index, 1);
         }
         return null;
     }
