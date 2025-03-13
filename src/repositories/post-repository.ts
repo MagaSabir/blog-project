@@ -12,7 +12,7 @@ export const postRepository = {
     createPost(req: any) {
         let idbl: any = db.blogs.map(el => el.id)
         let blogName = db.blogs.find((el) => el.id === idbl[idbl.length - 1])
-        console.log(typeof idbl.toString())
+
         const newPost: any = {
             id: Math.floor(Date.now() + Math.random()).toString(),
             title: req.title,
@@ -21,6 +21,7 @@ export const postRepository = {
             blogId: idbl[idbl.length - 1],
             blogName: blogName?.name
         }
+
         db.posts.push(newPost)
         return newPost
 
@@ -39,11 +40,7 @@ export const postRepository = {
         let blogName = db.blogs.find((el) => el.id === blogId[blogId.length - 1])
         const index = db.posts.findIndex(p => p.id === id)
         if (index !== -1) {
-            db.posts = db.posts.map(el => el.id === id ? {
-                ...el, ...req,
-                blogName: blogName?.name,
-                blogId: blogId.id
-            } : el)
+            db.posts = db.posts.map(el => el.id === id ? {...el, ...req, blogName: blogName?.name} : el)
             return db.posts[index]
         }
         return null
