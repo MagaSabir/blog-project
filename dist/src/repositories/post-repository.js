@@ -19,7 +19,7 @@ exports.postRepository = {
             title: req.title,
             shortDescription: req.shortDescription,
             content: req.content,
-            blogId: idbl.toString(),
+            blogId: idbl.at(-1).toString(),
             blogName: blogName.at(-1).toString()
         };
         console.log(idbl.toString());
