@@ -12,6 +12,6 @@ const postRoutes_1 = require("./routes/posts/postRoutes");
 const postValidator_1 = require("./validator/postValidator");
 exports.app = (0, express_1.default)();
 exports.app.use(express_1.default.json());
-exports.app.use(settings_1.SETTINGS.PATH.posts, postRoutes_1.postsRoutes, postValidator_1.titleValidator, postValidator_1.shortDescriptionValidator, blogValidator_1.websiteUrlValidator, postValidator_1.contentValidator, postValidator_1.blogId);
+exports.app.use(settings_1.SETTINGS.PATH.posts, postRoutes_1.postsRoutes, postValidator_1.titleValidator, postValidator_1.shortDescriptionValidator, blogValidator_1.websiteUrlValidator, postValidator_1.contentValidator);
 exports.app.use(settings_1.SETTINGS.PATH.blogs, blogRoutes_1.blogRoutes, blogValidator_1.nameValidator, blogValidator_1.descriptionValidator, blogValidator_1.websiteUrlValidator);
 exports.app.use(settings_1.SETTINGS.PATH.cleanDB, blogRoutes_1.blogRoutes);

@@ -8,7 +8,7 @@ import {blogId, contentValidator, shortDescriptionValidator, titleValidator} fro
 
 export const app = express();
 app.use(express.json())
-app.use(SETTINGS.PATH.posts, postsRoutes, titleValidator, shortDescriptionValidator, websiteUrlValidator, contentValidator, blogId)
+app.use(SETTINGS.PATH.posts, postsRoutes, titleValidator, shortDescriptionValidator, websiteUrlValidator, contentValidator)
 app.use(SETTINGS.PATH.blogs, blogRoutes, nameValidator, descriptionValidator, websiteUrlValidator)
 
 

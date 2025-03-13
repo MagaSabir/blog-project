@@ -19,9 +19,9 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     }
 
     const adminToken = Buffer.from(token, 'base64').toString()
-    const [tokenLogin, tokenPassword] = adminToken.split(':')
+    const [tokenToLogin, tokenToPassword] = adminToken.split(':')
 
-    if (login !== tokenLogin || password !== tokenPassword) {
+    if (login !== tokenToLogin || password !== tokenToPassword) {
         res.sendStatus(401)
         return;
     }
