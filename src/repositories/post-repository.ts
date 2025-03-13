@@ -39,7 +39,11 @@ export const postRepository = {
         let blogName = db.blogs.find((el) => el.id === blogId[blogId.length - 1])
         const index = db.posts.findIndex(p => p.id === id)
         if (index !== -1) {
-            db.posts = db.posts.map(el => el.id === id ? {...el, ...req, blogName: blogName?.name} : el)
+            db.posts = db.posts.map(el => el.id === id ? {
+                ...el, ...req,
+                blogName: blogName?.name,
+                blogId: blogId.id
+            } : el)
             return db.posts[index]
         }
         return null
