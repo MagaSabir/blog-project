@@ -1,10 +1,12 @@
-import {Router, Request, Response} from "express";
+import {Router, Request, Response, NextFunction} from "express";
 import {postRepository} from "../../repositories/post-repository";
 import {validationResult} from "express-validator";
 import {contentValidator, shortDescriptionValidator, titleValidator} from "../../validator/postValidator";
 import {authMiddleware} from "../../../middlewares/authMiddleware";
 
+
 export const postsRoutes = Router()
+
 
 postsRoutes
     .get('/', (req: Request, res: Response) => {
@@ -38,8 +40,9 @@ postsRoutes
             res.status(400).send({errorsMessages: error})
         } else {
 
-            res.status(201).send(postRepository.createPost(req.body))
+            res.status(201).send(postRepository.createPost(req.body,))
         }
+
     })
 
     .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, (req: Request, res: Response) => {
@@ -48,10 +51,10 @@ postsRoutes
             message: e.msg,
             field: e.path
         })).array({onlyFirstError: true})
-        console.log(postRepository.updatePost(req.params.id, req.body))
+
 
         if (error.length) {
-            res.status(400).send({errorsMessage: error})
+            res.status(400).send({errorsMessages: error})
             return;
         }
         if (updatedPost) {

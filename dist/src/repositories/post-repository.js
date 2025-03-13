@@ -11,12 +11,16 @@ exports.postRepository = {
         return post;
     },
     createPost(req) {
+        let idbl = db_1.db.blogs.map(el => el.id);
+        let blogName = db_1.db.blogs.find((el) => el.id === idbl[idbl.length - 1]);
+        console.log(typeof idbl.toString());
         const newPost = {
             id: Math.floor(Date.now() + Math.random()).toString(),
             title: req.title,
             shortDescription: req.shortDescription,
             content: req.content,
-            blogId: 'd',
+            blogId: idbl[idbl.length - 1],
+            blogName: blogName === null || blogName === void 0 ? void 0 : blogName.name
         };
         db_1.db.posts.push(newPost);
         return newPost;

@@ -10,12 +10,16 @@ export const postRepository = {
     },
 
     createPost(req: any) {
+        let idbl: any = db.blogs.map(el => el.id)
+        let blogName = db.blogs.find((el) => el.id === idbl[idbl.length - 1])
+        console.log(typeof idbl.toString())
         const newPost: any = {
             id: Math.floor(Date.now() + Math.random()).toString(),
             title: req.title,
             shortDescription: req.shortDescription,
             content: req.content,
-            blogId: 'd',
+            blogId: idbl[idbl.length - 1],
+            blogName: blogName?.name
         }
         db.posts.push(newPost)
         return newPost
