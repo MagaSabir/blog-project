@@ -35,9 +35,11 @@ export const postRepository = {
     },
 
     updatePost(id: string, req: any): any {
+        let blogId: any = db.blogs.map(el => el.id)
+        let blogName = db.blogs.find((el) => el.id === blogId[blogId.length - 1])
         const index = db.posts.findIndex(p => p.id === id)
         if (index !== -1) {
-            db.posts = db.posts.map(el => el.id === id ? {...el, ...req, blogName: ';'} : el)
+            db.posts = db.posts.map(el => el.id === id ? {...el, ...req, blogName: blogName?.name} : el)
             return db.posts[index]
         }
         return null
