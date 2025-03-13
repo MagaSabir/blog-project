@@ -29,9 +29,9 @@ blogRoutes
     })
 
     .post('/', authMiddleware, nameValidator, descriptionValidator, websiteUrlValidator, (req: Request, res: Response) => {
-        const error = validationResult(req).formatWith((error) => ({
-            field: error.type,
-            message: error.msg,
+        const error = validationResult(req).formatWith((e) => ({
+            message: e.msg,
+            field: e.path,
         })).array({onlyFirstError: true})
 
         if (error.length) {
@@ -46,9 +46,9 @@ blogRoutes
     })
 
     .put('/:id', authMiddleware, nameValidator, descriptionValidator, websiteUrlValidator, (req: Request, res: Response) => {
-        const error = validationResult(req).formatWith(error => ({
-            field: error.type,
-            message: error.msg
+        const error = validationResult(req).formatWith((e) => ({
+            message: e.msg,
+            field: e.path,
         })).array({onlyFirstError: true})
 
         if (error.length) {

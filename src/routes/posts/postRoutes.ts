@@ -30,8 +30,8 @@ postsRoutes
 
     .post('/', titleValidator, authMiddleware, shortDescriptionValidator, contentValidator, (req: Request, res: Response) => {
         const error = validationResult(req).formatWith((e) => ({
-            field: e.type,
-            message: e.msg
+            message: e.msg,
+            field: e.path,
         })).array({onlyFirstError: true})
 
         if (error.length) {
@@ -44,8 +44,8 @@ postsRoutes
 
     .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, (req: Request, res: Response) => {
         const error = validationResult(req).formatWith((e) => ({
-            field: e.type,
-            message: e.msg
+            message: e.msg,
+            field: e.path,
         })).array({onlyFirstError: true})
 
         if (error.length) {
