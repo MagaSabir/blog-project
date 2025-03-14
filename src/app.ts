@@ -4,7 +4,7 @@ import {SETTINGS} from "./settings";
 
 import {descriptionValidator, nameValidator, websiteUrlValidator} from "./validator/blogValidator";
 import {postsRoutes} from "./routes/posts/postRoutes";
-import {blogId, contentValidator, shortDescriptionValidator, titleValidator} from "./validator/postValidator";
+import {contentValidator, shortDescriptionValidator, titleValidator} from "./validator/postValidator";
 
 export const app = express();
 app.use(express.json())

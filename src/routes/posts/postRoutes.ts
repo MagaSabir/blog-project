@@ -11,15 +11,15 @@ export const postsRoutes = Router()
 postsRoutes
     .get('/', (req: Request, res: Response) => {
         res.status(200).send(postRepository.findPost())
-
     })
     .get('/:id', (req: Request, res: Response) => {
         const post = postRepository.findPostById(req.params.id)
         if (post) {
             res.status(200).send(post)
-        } else {
-            res.sendStatus(404)
+            return
         }
+        res.sendStatus(404)
+        return;
     })
 
     .delete('/:id', authMiddleware, (req: Request, res: Response) => {
@@ -38,10 +38,10 @@ postsRoutes
 
         if (error.length) {
             res.status(400).send({errorsMessages: error})
-        } else {
-
-            res.status(201).send(postRepository.createPost(req.body,))
         }
+
+        res.status(201).send(postRepository.createPost(req.body,))
+        return
 
     })
 
@@ -61,7 +61,7 @@ postsRoutes
             postRepository.updatePost(req.params.id, req.body)
             res.sendStatus(204)
             return
-        } else {
-            res.sendStatus(404)
         }
+        res.sendStatus(404)
+
     })
