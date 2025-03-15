@@ -15,10 +15,10 @@ exports.postsRoutes
     const post = post_repository_1.postRepository.findPostById(req.params.id);
     if (post) {
         res.status(200).send(post);
+        return;
     }
-    else {
-        res.sendStatus(404);
-    }
+    res.sendStatus(404);
+    return;
 })
     .delete('/:id', authMiddleware_1.authMiddleware, (req, res) => {
     const blog = post_repository_1.postRepository.deleteById(req.params.id);
@@ -35,9 +35,8 @@ exports.postsRoutes
     if (error.length) {
         res.status(400).send({ errorsMessages: error });
     }
-    else {
-        res.status(201).send(post_repository_1.postRepository.createPost(req.body));
-    }
+    res.status(201).send(post_repository_1.postRepository.createPost(req.body));
+    return;
 })
     .put('/:id', authMiddleware_1.authMiddleware, postValidator_1.titleValidator, postValidator_1.shortDescriptionValidator, postValidator_1.contentValidator, (req, res) => {
     const updatedPost = post_repository_1.postRepository.updatePost(req.params.id, req.body);
@@ -54,7 +53,5 @@ exports.postsRoutes
         res.sendStatus(204);
         return;
     }
-    else {
-        res.sendStatus(404);
-    }
+    res.sendStatus(404);
 });
