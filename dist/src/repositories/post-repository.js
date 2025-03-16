@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postRepository = void 0;
 const db_1 = require("../db/db");
+const blog_repository_1 = require("./blog-repository");
 exports.postRepository = {
     findPost() {
         return db_1.db.posts;
@@ -11,18 +12,15 @@ exports.postRepository = {
         return post;
     },
     createPost(req) {
-        let idbl = db_1.db.blogs.map(el => el.id);
-        let blogName = db_1.db.blogs.map(el => el.name);
-        // let blogName = db.blogs.find((el) => el.id === idbl[idbl.length - 1])
+        let blog = blog_repository_1.blogRepository.findBlog().find((el => el.id));
         const newPost = {
             id: Math.floor(Date.now() + Math.random()).toString(),
             title: req.title,
             shortDescription: req.shortDescription,
             content: req.content,
-            blogId: idbl.at(-1).toString(),
-            blogName: blogName.at(-1).toString()
+            blogId: blog === null || blog === void 0 ? void 0 : blog.id,
+            blogName: blog === null || blog === void 0 ? void 0 : blog.name
         };
-        console.log(idbl.toString());
         db_1.db.posts.push(newPost);
         return newPost;
     },

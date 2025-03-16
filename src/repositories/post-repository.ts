@@ -1,4 +1,6 @@
 import {db} from "../db/db";
+import {blogRepository} from "./blog-repository";
+import {body} from "express-validator";
 
 export const postRepository = {
     findPost() {
@@ -10,20 +12,16 @@ export const postRepository = {
     },
 
     createPost(req: any) {
-        let idbl: any = db.blogs.map(el => el.id)
-        let blogName: any = db.blogs.map(el => el.name)
-        // let blogName = db.blogs.find((el) => el.id === idbl[idbl.length - 1])
+        let blog = blogRepository.findBlog().find((el => el.id))
 
         const newPost: any = {
             id: Math.floor(Date.now() + Math.random()).toString(),
             title: req.title,
             shortDescription: req.shortDescription,
             content: req.content,
-            blogId: idbl.at(-1).toString(),
-            blogName: blogName.at(-1).toString()
+            blogId: blog?.id,
+            blogName: blog?.name
         }
-        console.log(idbl.toString())
-
         db.posts.push(newPost)
         return newPost
 

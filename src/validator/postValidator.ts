@@ -1,4 +1,5 @@
 import {body} from "express-validator";
+import {blogRepository} from "../repositories/blog-repository";
 
 export const titleValidator = body('title')
     .trim().isLength({min: 1, max: 30}).withMessage('Max length 30 symbols')
@@ -8,3 +9,7 @@ export const shortDescriptionValidator = body('shortDescription')
     .isString().withMessage('shortDescription is not string')
 export const contentValidator = body('content')
     .trim().isLength({min: 1, max: 1000}).withMessage('Max length 1000 symbols')
+export const blogIdValidator = body('blogId').isString().withMessage('not string')
+    .trim().custom(blogId => {
+        return blogRepository.findBlogById(blogId) ? true : false
+    }).withMessage('no blog')

@@ -1,8 +1,15 @@
 import {Router, Request, Response, NextFunction} from "express";
 import {postRepository} from "../../repositories/post-repository";
-import {validationResult} from "express-validator";
-import {contentValidator, shortDescriptionValidator, titleValidator} from "../../validator/postValidator";
+import {body, validationResult} from "express-validator";
+import {
+    blogIdValidator,
+    contentValidator,
+    shortDescriptionValidator,
+    titleValidator
+} from "../../validator/postValidator";
 import {authMiddleware} from "../../../middlewares/authMiddleware";
+import {db} from "../../db/db";
+import {req} from "../../../__tests__/test-helpers";
 
 
 export const postsRoutes = Router()
@@ -30,7 +37,8 @@ postsRoutes
         res.sendStatus(404)
     })
 
-    .post('/', titleValidator, authMiddleware, shortDescriptionValidator, contentValidator, (req: Request, res: Response) => {
+    .post('/', titleValidator, authMiddleware, shortDescriptionValidator, contentValidator,blogIdValidator,(req: Request, res: Response, next:NextFunction) => {
+
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,
             field: e.path
