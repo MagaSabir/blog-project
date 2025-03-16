@@ -37,7 +37,7 @@ postsRoutes
         res.sendStatus(404)
     })
 
-    .post('/', titleValidator, authMiddleware, shortDescriptionValidator, contentValidator,blogIdValidator,(req: Request, res: Response, next:NextFunction) => {
+    .post('/',authMiddleware, titleValidator, shortDescriptionValidator, contentValidator,blogIdValidator,(req: Request, res: Response, next:NextFunction) => {
 
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,
@@ -53,7 +53,7 @@ postsRoutes
 
     })
 
-    .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, (req: Request, res: Response) => {
+    .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator,blogIdValidator, (req: Request, res: Response) => {
         const updatedPost = postRepository.updatePost(req.params.id, req.body)
         const error = validationResult(req).formatWith((e) => ({
             message: e.msg,

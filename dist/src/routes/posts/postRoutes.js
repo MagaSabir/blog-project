@@ -27,7 +27,7 @@ exports.postsRoutes
     }
     res.sendStatus(404);
 })
-    .post('/', postValidator_1.titleValidator, authMiddleware_1.authMiddleware, postValidator_1.shortDescriptionValidator, postValidator_1.contentValidator, postValidator_1.blogIdValidator, (req, res, next) => {
+    .post('/', authMiddleware_1.authMiddleware, postValidator_1.titleValidator, postValidator_1.shortDescriptionValidator, postValidator_1.contentValidator, postValidator_1.blogIdValidator, (req, res, next) => {
     const error = (0, express_validator_1.validationResult)(req).formatWith((e) => ({
         message: e.msg,
         field: e.path
@@ -38,7 +38,7 @@ exports.postsRoutes
     res.status(201).send(post_repository_1.postRepository.createPost(req.body));
     return;
 })
-    .put('/:id', authMiddleware_1.authMiddleware, postValidator_1.titleValidator, postValidator_1.shortDescriptionValidator, postValidator_1.contentValidator, (req, res) => {
+    .put('/:id', authMiddleware_1.authMiddleware, postValidator_1.titleValidator, postValidator_1.shortDescriptionValidator, postValidator_1.contentValidator, postValidator_1.blogIdValidator, (req, res) => {
     const updatedPost = post_repository_1.postRepository.updatePost(req.params.id, req.body);
     const error = (0, express_validator_1.validationResult)(req).formatWith((e) => ({
         message: e.msg,
