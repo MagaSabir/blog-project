@@ -1,75 +1,60 @@
 import {SETTINGS} from "../src/settings";
 import {req} from "./test-helpers";
-import {db} from "../src/db/db";
-
-
-const newBlog = [
-    {
-        id: Math.floor(Date.now() + Math.random()).toString(),
-        name: 'name',
-        description: 12,
-        websiteUrl: "https://blabla.com"
-    },
-    {
-        id: Math.floor(Date.now() + Math.random()).toString(),
-        name: 'ssss',
-        description: 'string',
-        websiteUrl: "https://blabla.com"
-    }
-];
-//describe(name, fn) группирует связанные по логике тесты в один блок.
-describe('/blogs', ()=> {
-    //метод test запускает тест(Первый аргумент — имя теста; второй аргумент — функция, содержащая ожидания для тестирования)
-    it('should get empty array', async () => {
-       db.blogs = []
-
-        const res = await req
-            .get(SETTINGS.PATH.blogs)
-            .expect(200) // Функция expect используется каждый раз, когда вы хотите проверить значение
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBe(0)
-    })
-
-    it.each([newBlog[0]])('should return 400 if some required field is missing or not string', async (invalidData) => {
-        const res = await req
-            .post(SETTINGS.PATH.blogs)
-            .send(invalidData)
-            .expect(400);
-
-        expect(res.body.errorMessages).toBeDefined();
-        expect(Array.isArray(res.body.errorMessages)).toBe(true);
-        expect(res.body.errorMessages.length).toBeGreaterThan(0);
-    });
-
-    it.each([newBlog[1]])('should return 204 if the request was successful', async (validData) => {
-        const res = await req
-            .put('/blogs/:id')
-            .send(validData)
-            .expect(204);
-    });
-
-    it.each([newBlog[0]])('should return 404 if some required field is missing or not a string', async (validData) => {
-        const res = await req
-            .put(SETTINGS.PATH.blogs + '/:id')
-            .send(validData)
-            .expect(400)
-
-        console.log(res.body.errorMessages)
-        expect(res.body.errorMessages).toBeDefined();
-        expect(Array.isArray(res.body.errorMessages)).toBe(true)
-        expect(res.body.errorMessages.length).toBeGreaterThan(0)
-    })
-})
+import {db, errorsArray} from "../src/db/db";
+import random from 'random-string-generator'
 
 describe('/posts', () => {
+    db.posts = []
     it('should return empty array', async () => {
-        db.posts = []
         const res = await req
-            .get('/posts')
+            .get(SETTINGS.PATH.posts)
+            .send(db.posts)
             .expect(200)
-        expect(Array.isArray(res.body)).toBe(true)
-        expect(res.body.length).toBe(0);
+        expect(res.body).toEqual([])
+        console.log(res.body)
+    })
+
+    it('shouldn\'t create', async () => {
+        const newPost = {
+            title: random(31),
+            content: random(1001),
+            shortDescription: random(101),
+            blogId: '12',
+        }
+        const buff = Buffer.from(SETTINGS.ADMIN_AUTH, 'utf8')
+        const codedAuth = buff.toString('base64')
+        const res = await req
+            .post(SETTINGS.PATH.posts)
+            .set({'Authorization': 'Basic ' + codedAuth})
+            .send(newPost) // отправка данных
+            .expect(400)
+
+        expect(res.body.errorsMessages.length).toEqual(4)
+        expect(res.body.errorsMessages[0].field).toEqual('title')
+        expect(res.body.errorsMessages[1].field).toEqual('shortDescription')
+        expect(res.body.errorsMessages[2].field).toEqual('content')
+        expect(res.body.errorsMessages[3].field).toEqual('blogId')
+        expect(db.posts.length).toEqual(0)
+        console.log(res.body.errorsMessages)
+    })
+
+    it('should create and return new post', async () => {
+        const newPost = {
+            id: '12',
+            title: random(5),
+            content: random(10),
+            shortDescription: random(10),
+            blogId: '1'
+        }
+        const buff = Buffer.from(SETTINGS.ADMIN_AUTH, "utf8")
+        const codeAuth = buff.toString("base64")
+        const res = await req
+            .post(SETTINGS.PATH.posts)
+            .set({'Authorization': 'Basic ' + codeAuth})
+            .send(newPost)
+            .expect(201)
+        expect(res.body.title).toEqual(newPost.title)
+        console.log(newPost)
     })
 
 })
-

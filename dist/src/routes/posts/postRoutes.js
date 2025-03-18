@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRoutes = void 0;
 const express_1 = require("express");
 const post_repository_1 = require("../../repositories/post-repository");
-const express_validator_1 = require("express-validator");
 const postValidator_1 = require("../../validator/postValidator");
 const authMiddleware_1 = require("../../../middlewares/authMiddleware");
+const db_1 = require("../../db/db");
 exports.postsRoutes = (0, express_1.Router)();
 exports.postsRoutes
     .get('/', (req, res) => {
@@ -27,25 +27,20 @@ exports.postsRoutes
     }
     res.sendStatus(404);
 })
-    .post('/', authMiddleware_1.authMiddleware, postValidator_1.titleValidator, postValidator_1.shortDescriptionValidator, postValidator_1.contentValidator, postValidator_1.blogIdValidator, (req, res, next) => {
-    const error = (0, express_validator_1.validationResult)(req).formatWith((e) => ({
-        message: e.msg,
-        field: e.path
-    })).array({ onlyFirstError: true });
-    if (error.length) {
-        res.status(400).send({ errorsMessages: error });
+    .post('/', authMiddleware_1.authMiddleware, postValidator_1.titleValidator, postValidator_1.shortDescriptionValidator, postValidator_1.contentValidator, postValidator_1.blogIdValidator, (req, res) => {
+    const errors = (0, db_1.errorsArray)(req);
+    if (errors.length) {
+        res.status(400).send({ errorsMessages: errors });
+        return;
     }
     res.status(201).send(post_repository_1.postRepository.createPost(req.body));
     return;
 })
     .put('/:id', authMiddleware_1.authMiddleware, postValidator_1.titleValidator, postValidator_1.shortDescriptionValidator, postValidator_1.contentValidator, postValidator_1.blogIdValidator, (req, res) => {
     const updatedPost = post_repository_1.postRepository.updatePost(req.params.id, req.body);
-    const error = (0, express_validator_1.validationResult)(req).formatWith((e) => ({
-        message: e.msg,
-        field: e.path
-    })).array({ onlyFirstError: true });
-    if (error.length) {
-        res.status(400).send({ errorsMessages: error });
+    const errors = (0, db_1.errorsArray)(req);
+    if (errors.length) {
+        res.status(400).send({ errorsMessages: errors });
         return;
     }
     if (updatedPost) {

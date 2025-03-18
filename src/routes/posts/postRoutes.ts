@@ -8,7 +8,7 @@ import {
     titleValidator
 } from "../../validator/postValidator";
 import {authMiddleware} from "../../../middlewares/authMiddleware";
-import {db} from "../../db/db";
+import {db, errorsArray} from "../../db/db";
 import {req} from "../../../__tests__/test-helpers";
 
 
@@ -37,32 +37,22 @@ postsRoutes
         res.sendStatus(404)
     })
 
-    .post('/',authMiddleware, titleValidator, shortDescriptionValidator, contentValidator,blogIdValidator,(req: Request, res: Response, next:NextFunction) => {
-
-        const error = validationResult(req).formatWith((e) => ({
-            message: e.msg,
-            field: e.path
-        })).array({onlyFirstError: true})
-
-        if (error.length) {
-            res.status(400).send({errorsMessages: error})
+    .post('/', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, blogIdValidator, (req: Request, res: Response,) => {
+        const errors = errorsArray(req)
+        if (errors.length) {
+            res.status(400).send({errorsMessages: errors})
+            return
         }
-
         res.status(201).send(postRepository.createPost(req.body,))
         return
 
     })
 
-    .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator,blogIdValidator, (req: Request, res: Response) => {
+    .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, blogIdValidator, (req: Request, res: Response) => {
         const updatedPost = postRepository.updatePost(req.params.id, req.body)
-        const error = validationResult(req).formatWith((e) => ({
-            message: e.msg,
-            field: e.path
-        })).array({onlyFirstError: true})
-
-
-        if (error.length) {
-            res.status(400).send({errorsMessages: error})
+        const errors = errorsArray(req)
+        if (errors.length) {
+            res.status(400).send({errorsMessages: errors})
             return;
         }
         if (updatedPost) {

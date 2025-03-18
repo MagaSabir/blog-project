@@ -7,8 +7,7 @@ export const postRepository = {
         return db.posts
     },
     findPostById(id: string) {
-        const post = db.posts.find(v => v.id === id)
-        return post
+        return db.posts.find(v => v.id === id)
     },
 
     createPost(req: any) {

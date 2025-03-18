@@ -10,5 +10,8 @@ exports.SETTINGS = {
         posts: '/posts',
         cleanDB: '/testing/all-data'
     },
-    ADMIN_AUTH: 'admin:qwerty'
+    ADMIN_AUTH: 'admin:qwerty',
+    DB_NAME: "Blogs"
 };
+const mongoURI = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017';
+console.log(mongoURI);

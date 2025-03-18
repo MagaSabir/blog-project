@@ -1,19 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.db = void 0;
+exports.db = exports.errorsArray = void 0;
+const express_validator_1 = require("express-validator");
+const errorsArray = (req) => {
+    // @ts-ignore
+    return (0, express_validator_1.validationResult)(req).formatWith((error) => ({
+        message: error.msg,
+        field: error.path
+    })).array({ onlyFirstError: true });
+};
+exports.errorsArray = errorsArray;
 exports.db = {
-    blogs: [{
-            id: "1",
-            name: "string",
-            description: "string",
-            websiteUrl: "string"
-        }],
-    posts: [{
-            id: "1",
-            title: 'string',
-            shortDescription: "string",
-            content: "string",
-            blogId: "string",
-            blogName: "string"
-        }]
+    blogs: [
+        {
+            id: '1',
+            name: "q",
+            description: "s",
+            websiteUrl: "googleee.com"
+        }
+    ],
+    posts: []
 };

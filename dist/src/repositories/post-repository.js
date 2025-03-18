@@ -8,8 +8,7 @@ exports.postRepository = {
         return db_1.db.posts;
     },
     findPostById(id) {
-        const post = db_1.db.posts.find(v => v.id === id);
-        return post;
+        return db_1.db.posts.find(v => v.id === id);
     },
     createPost(req) {
         let blog = blog_repository_1.blogRepository.findBlog().find((el => el.id));
