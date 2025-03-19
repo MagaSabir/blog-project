@@ -33,14 +33,12 @@ export const errorsArray = (req: any) => {
 }
 
 export const db: blogDbType = {
-    blogs: [
-        {
-            id: '1',
-            name: "q",
-            description: "s",
-            websiteUrl: "googleee.com"
-        }
-    ],
+    blogs: [{
+        id: '1',
+        name: 'ss',
+        description: 'ss',
+        websiteUrl: 'http://google.com'
+    }],
     posts: []
 }
 

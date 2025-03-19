@@ -1,6 +1,6 @@
 import {db} from "../db/db";
 import {blogRepository} from "./blog-repository";
-import {body} from "express-validator";
+import {client} from "../db/mongodb";
 
 export const postRepository = {
     findPost() {
@@ -10,9 +10,8 @@ export const postRepository = {
         return db.posts.find(v => v.id === id)
     },
 
-    createPost(req: any) {
-        let blog = blogRepository.findBlog().find((el => el.id))
-
+    async createPost(req: any) {
+        let blog = (await blogRepository.findBlog()).find((el => el.id))
         const newPost: any = {
             id: Math.floor(Date.now() + Math.random()).toString(),
             title: req.title,
@@ -21,7 +20,7 @@ export const postRepository = {
             blogId: blog?.id,
             blogName: blog?.name
         }
-        db.posts.push(newPost)
+        let result = await client.db('blogPlatform').collection('posts').insertOne(newPost)
         return newPost
 
     },

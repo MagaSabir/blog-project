@@ -11,13 +11,13 @@ import {authMiddleware} from "../../../middlewares/authMiddleware";
 
 export const blogRoutes = Router()
 
-    .get('/', (req: Request, res: Response) => {
-        res.status(200).send(blogRepository.findBlog()
+    .get('/', async (req: Request, res: Response) => {
+        res.status(200).send(await blogRepository.findBlog()
         )
     })
 
-    .get('/:id', nameValidator, (req: Request, res: Response) => {
-        const blog = blogRepository.findBlogById(req.params.id)
+    .get('/:id', nameValidator, async (req: Request, res: Response) => {
+        const blog = await blogRepository.findBlogById(req.params.id)
         if (blog) {
             res.status(200).send(blog)
             return
@@ -25,25 +25,25 @@ export const blogRoutes = Router()
         res.sendStatus(404)
     })
 
-    .post('/', authMiddleware, websiteUrlValidator, descriptionValidator, nameValidator, (req: Request, res: Response) => {
+    .post('/', authMiddleware, websiteUrlValidator, descriptionValidator, nameValidator, async (req: Request, res: Response) => {
         const errors = errorsArray(req)
         if (errors.length) {
             res.status(400).send({errorsMessages: errors})
             return;
         }
-        res.status(201).send(blogRepository.createBlog(req.body))
+        res.status(201).send(await blogRepository.createBlog(req.body))
         return
     })
 
-    .put('/:id', authMiddleware, websiteUrlValidator, descriptionValidator, websiteUrlValidator, nameValidator, (req: Request, res: Response) => {
-        const updatedBlog = blogRepository.updateBlog(req.params.id, req.body)
+    .put('/:id', authMiddleware, websiteUrlValidator, descriptionValidator, websiteUrlValidator, nameValidator, async (req: Request, res: Response) => {
+        const updatedBlog = await blogRepository.updateBlog(req.params.id, req.body)
         const errors = errorsArray(req)
         if (errors.length) {
             res.status(400).send({errorsMessages: errors})
             return
         }
         if (updatedBlog) {
-            blogRepository.updateBlog(req.params.id, req.body)
+            await blogRepository.updateBlog(req.params.id, req.body)
             res.sendStatus(204)
             return;
         }
@@ -51,8 +51,8 @@ export const blogRoutes = Router()
         return;
     })
 
-    .delete('/:id', authMiddleware, (req: Request, res: Response) => {
-        const blog = blogRepository.deleteById(req.params.id)
+    .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
+        const blog = await blogRepository.deleteById(req.params.id)
         if (blog) {
             res.sendStatus(204)
             return

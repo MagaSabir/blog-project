@@ -11,13 +11,11 @@ const errorsArray = (req) => {
 };
 exports.errorsArray = errorsArray;
 exports.db = {
-    blogs: [
-        {
+    blogs: [{
             id: '1',
-            name: "q",
-            description: "s",
-            websiteUrl: "googleee.com"
-        }
-    ],
+            name: 'ss',
+            description: 'ss',
+            websiteUrl: 'http://google.com'
+        }],
     posts: []
 };
