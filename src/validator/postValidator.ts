@@ -9,7 +9,7 @@ export const shortDescriptionValidator = body('shortDescription')
     .isString().withMessage('shortDescription is not string')
 export const contentValidator = body('content')
     .trim().isLength({min: 1, max: 1000}).withMessage('Max length 1000 symbols')
-export const blogIdValidator = body('blogId').isString().withMessage('not string')
-    .trim().custom(async blogId => {
-        return !!await blogRepository.findBlogById(blogId)
-    }).withMessage('no blog')
+// export const blogIdValidator = body('blogId').isString().withMessage('not string')
+//     .trim().custom(async blogId => {
+//         return !!await blogRepository.findBlogById(blogId)
+//     }).withMessage('no blog')

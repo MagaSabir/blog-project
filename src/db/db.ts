@@ -7,14 +7,12 @@ type blogDbType = {
 }
 
 export type dbBlogType = {
-    id: string,
     name: string,
     description: string,
     websiteUrl: string
 }
 
-type dbPostType = {
-    id: string,
+export type dbPostType = {
     title: string
     shortDescription: string,
     content: string,
@@ -33,12 +31,7 @@ export const errorsArray = (req: any) => {
 }
 
 export const db: blogDbType = {
-    blogs: [{
-        id: '1',
-        name: 'ss',
-        description: 'ss',
-        websiteUrl: 'http://google.com'
-    }],
+    blogs: [],
     posts: []
 }
 

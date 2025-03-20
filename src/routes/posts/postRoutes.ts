@@ -2,7 +2,7 @@ import {Router, Request, Response, NextFunction} from "express";
 import {postRepository} from "../../repositories/post-repository";
 import {body, validationResult} from "express-validator";
 import {
-    blogIdValidator,
+    // blogIdValidator,
     contentValidator,
     shortDescriptionValidator,
     titleValidator
@@ -10,14 +10,15 @@ import {
 import {authMiddleware} from "../../../middlewares/authMiddleware";
 import {db, errorsArray} from "../../db/db";
 import {req} from "../../../__tests__/test-helpers";
+import {client} from "../../db/mongodb";
 
 
 export const postsRoutes = Router()
 
 
 postsRoutes
-    .get('/', (req: Request, res: Response) => {
-        res.status(200).send(postRepository.findPost())
+    .get('/', async (req: Request, res: Response) => {
+        res.status(200).send(await postRepository.findPost())
     })
     .get('/:id', (req: Request, res: Response) => {
         const post = postRepository.findPostById(req.params.id)
@@ -29,37 +30,38 @@ postsRoutes
         return;
     })
 
-    .delete('/:id', authMiddleware, (req: Request, res: Response) => {
-        const blog = postRepository.deleteById(req.params.id)
-        if (blog) {
-            res.sendStatus(204)
-        }
-        res.sendStatus(404)
-    })
+    // .delete('/:id', authMiddleware, (req: Request, res: Response) => {
+    //     const blog = postRepository.deleteById(req.params.id)
+    //     if (blog) {
+    //         res.sendStatus(204)
+    //     }
+    //     res.sendStatus(404)
+    // })
 
-    .post('/', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, blogIdValidator, (req: Request, res: Response,) => {
+    .post('/', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, (req: Request, res: Response,) => {
         const errors = errorsArray(req)
         if (errors.length) {
             res.status(400).send({errorsMessages: errors})
             return
         }
-        res.status(201).send(postRepository.createPost(req.body,))
+        res.status(201).send(postRepository.createPost(req.body))
         return
 
     })
 
-    .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, blogIdValidator, (req: Request, res: Response) => {
-        const updatedPost = postRepository.updatePost(req.params.id, req.body)
-        const errors = errorsArray(req)
-        if (errors.length) {
-            res.status(400).send({errorsMessages: errors})
-            return;
-        }
-        if (updatedPost) {
-            postRepository.updatePost(req.params.id, req.body)
-            res.sendStatus(204)
-            return
-        }
-        res.sendStatus(404)
 
-    })
+// .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, blogIdValidator, (req: Request, res: Response) => {
+//     const updatedPost = postRepository.updatePost(req.params.id, req.body)
+//     const errors = errorsArray(req)
+//     if (errors.length) {
+//         res.status(400).send({errorsMessages: errors})
+//         return;
+//     }
+//     if (updatedPost) {
+//         postRepository.updatePost(req.params.id, req.body)
+//         res.sendStatus(204)
+//         return
+//     }
+//     res.sendStatus(404)
+//
+// })

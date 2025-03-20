@@ -1,15 +1,23 @@
 import {db, dbBlogType} from "../db/db";
 import {client} from "../db/mongodb";
-import {req} from "../../__tests__/test-helpers";
+import {ObjectId} from "mongodb";
+
 
 export const blogRepository = {
     async findBlog(): Promise<dbBlogType[]> {
-        return client.db('blogPlatform').collection<dbBlogType>('blogs').find({}).toArray()
+        const blog = await client.db('blogPlatform').collection<dbBlogType>('blogs').find({}).toArray()
+        return blog.map(({_id, ...el}) => ({
+            ...el,
+            id: _id.toString()
+        }));
+
     },
 
     async findBlogById(id: string): Promise<dbBlogType | null> {
-
-        let blog: dbBlogType | null = await client.db('blogPlatform').collection<dbBlogType>('blog').findOne({id: id})
+        if (!ObjectId.isValid(id)) {
+            return null
+        }
+        let blog: dbBlogType | null = await client.db('blogPlatform').collection<dbBlogType>('blogs').findOne({_id: new ObjectId(id)})
         if (blog) {
             return blog
         } else {
@@ -19,33 +27,35 @@ export const blogRepository = {
 
     async createBlog(req: any): Promise<dbBlogType[]> {
         const newBlog = {
-            id: Math.floor(Date.now() + Math.random()).toString(),
             name: req.name,
             description: req.description,
             websiteUrl: req.websiteUrl
         }
-        const result = await client.db('blogPlatform').collection<dbBlogType>('blogs').insertOne(newBlog)
-        console.log(result)
+        await client.db('blogPlatform').collection<dbBlogType>('blogs').insertOne(newBlog)
+
         // @ts-ignore
         return newBlog
     },
-    async updateBlog(id: any, req: any): Promise<dbBlogType> {
-
-        const index = db.blogs.findIndex(p => p.id === id)
-        if (index !== -1) {
-            db.blogs = db.blogs.map(el => el.id === id ? {...el, ...req} : el)
-            return db.blogs[index]
-        }
-        // @ts-ignore
-        return null
+    async updateBlog(id: any, req: any): Promise<dbBlogType[] | boolean> {
+        const updateDocument = {
+            $set: {
+                name: req.name,
+                description: req.description,
+                websiteUrl: req.websiteUrl
+            },
+        };
+        const result = await client.db('blogPlatform').collection<dbBlogType>('blogs').updateOne({_id: new ObjectId(id)}, updateDocument)
+        return result.matchedCount === 1
+    },
+    async deleteById(id: string): Promise<dbBlogType[] | boolean> {
+        const result = await client.db('blogPlatform').collection<dbBlogType>('blogs').deleteOne({_id: new ObjectId(id)})
+        return result.deletedCount === 1
     },
 
-    async deleteById(id: string): Promise<dbBlogType[]> {
-        const index = db.blogs.findIndex(v => v.id === id)
-        if (index !== -1) {
-            return db.blogs.splice(index, 1)
-        }
-        // @ts-ignore
-        return null
+    async cleanBlogsDB(): Promise<boolean> {
+        const blogsResult = await client.db('blogPlatform').collection('blogs').deleteMany({})
+        const postsResult = await client.db('blogPlatform').collection('posts').deleteMany({})
+        return blogsResult.deletedCount === 1 && postsResult.deletedCount === 1
     }
 }
+

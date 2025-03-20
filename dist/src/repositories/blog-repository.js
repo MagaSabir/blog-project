@@ -8,19 +8,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogRepository = void 0;
-const db_1 = require("../db/db");
 const mongodb_1 = require("../db/mongodb");
+const mongodb_2 = require("mongodb");
 exports.blogRepository = {
     findBlog() {
         return __awaiter(this, void 0, void 0, function* () {
-            return mongodb_1.client.db('blogPlatform').collection('blogs').find({}).toArray();
+            const blog = yield mongodb_1.client.db('blogPlatform').collection('blogs').find({}).toArray();
+            return blog.map((_a) => {
+                var { _id } = _a, el = __rest(_a, ["_id"]);
+                return (Object.assign(Object.assign({}, el), { id: _id.toString() }));
+            });
         });
     },
     findBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let blog = yield mongodb_1.client.db('blogPlatform').collection('blog').findOne({ id: id });
+            if (!mongodb_2.ObjectId.isValid(id)) {
+                return null;
+            }
+            let blog = yield mongodb_1.client.db('blogPlatform').collection('blogs').findOne({ _id: new mongodb_2.ObjectId(id) });
             if (blog) {
                 return blog;
             }
@@ -32,36 +50,39 @@ exports.blogRepository = {
     createBlog(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const newBlog = {
-                id: Math.floor(Date.now() + Math.random()).toString(),
                 name: req.name,
                 description: req.description,
                 websiteUrl: req.websiteUrl
             };
-            const result = yield mongodb_1.client.db('blogPlatform').collection('blogs').insertOne(newBlog);
-            console.log(result);
+            yield mongodb_1.client.db('blogPlatform').collection('blogs').insertOne(newBlog);
             // @ts-ignore
             return newBlog;
         });
     },
     updateBlog(id, req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const index = db_1.db.blogs.findIndex(p => p.id === id);
-            if (index !== -1) {
-                db_1.db.blogs = db_1.db.blogs.map(el => el.id === id ? Object.assign(Object.assign({}, el), req) : el);
-                return db_1.db.blogs[index];
-            }
-            // @ts-ignore
-            return null;
+            const updateDocument = {
+                $set: {
+                    name: req.name,
+                    description: req.description,
+                    websiteUrl: req.websiteUrl
+                },
+            };
+            const result = yield mongodb_1.client.db('blogPlatform').collection('blogs').updateOne({ _id: new mongodb_2.ObjectId(id) }, updateDocument);
+            return result.matchedCount === 1;
         });
     },
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const index = db_1.db.blogs.findIndex(v => v.id === id);
-            if (index !== -1) {
-                return db_1.db.blogs.splice(index, 1);
-            }
-            // @ts-ignore
-            return null;
+            const result = yield mongodb_1.client.db('blogPlatform').collection('blogs').deleteOne({ _id: new mongodb_2.ObjectId(id) });
+            return result.deletedCount === 1;
+        });
+    },
+    cleanBlogsDB() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const blogsResult = yield mongodb_1.client.db('blogPlatform').collection('blogs').deleteMany({});
+            const postsResult = yield mongodb_1.client.db('blogPlatform').collection('posts').deleteMany({});
+            return blogsResult.deletedCount === 1 && postsResult.deletedCount === 1;
         });
     }
 };

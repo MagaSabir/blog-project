@@ -21,8 +21,10 @@ export const blogRoutes = Router()
         if (blog) {
             res.status(200).send(blog)
             return
+        } else {
+            res.sendStatus(404)
         }
-        res.sendStatus(404)
+
     })
 
     .post('/', authMiddleware, websiteUrlValidator, descriptionValidator, nameValidator, async (req: Request, res: Response) => {
@@ -59,9 +61,13 @@ export const blogRoutes = Router()
         }
         res.sendStatus(404)
     })
+    .delete('/', authMiddleware, async (req: Request, res: Response) => {
+        const blog = await blogRepository.cleanBlogsDB()
+        res.sendStatus(204)
+    })
 
-blogRoutes.delete('/', (req: Request, res: Response) => {
-    db.blogs = []
-    db.posts = []
-    res.sendStatus(204)
-})
+// blogRoutes.delete('/', async (req: Request, res: Response) => {
+//     db.blogs = []
+//     db.posts = []
+//     res.sendStatus(204)
+// })

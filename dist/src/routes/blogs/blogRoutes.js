@@ -25,7 +25,9 @@ exports.blogRoutes = (0, express_1.Router)()
         res.status(200).send(blog);
         return;
     }
-    res.sendStatus(404);
+    else {
+        res.sendStatus(404);
+    }
 }))
     .post('/', authMiddleware_1.authMiddleware, blogValidator_1.websiteUrlValidator, blogValidator_1.descriptionValidator, blogValidator_1.nameValidator, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = (0, db_1.errorsArray)(req);
@@ -58,9 +60,13 @@ exports.blogRoutes = (0, express_1.Router)()
         return;
     }
     res.sendStatus(404);
-}));
-exports.blogRoutes.delete('/', (req, res) => {
-    db_1.db.blogs = [];
-    db_1.db.posts = [];
+}))
+    .delete('/', authMiddleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const blog = yield blog_repository_1.blogRepository.cleanBlogsDB();
     res.sendStatus(204);
-});
+}));
+// blogRoutes.delete('/', async (req: Request, res: Response) => {
+//     db.blogs = []
+//     db.posts = []
+//     res.sendStatus(204)
+// })
