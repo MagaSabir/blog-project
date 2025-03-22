@@ -61,7 +61,7 @@ export const blogRoutes = Router()
         }
         res.sendStatus(404)
     })
-    .delete('/', authMiddleware, async (req: Request, res: Response) => {
+    .delete('/', async (req: Request, res: Response) => {
         const blog = await blogRepository.cleanBlogsDB()
         res.sendStatus(204)
     })
