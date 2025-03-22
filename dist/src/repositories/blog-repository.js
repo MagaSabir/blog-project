@@ -35,9 +35,9 @@ exports.blogRepository = {
     },
     findBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            // if (!ObjectId.isValid(id)) {
-            //     return true
-            // }
+            if (!mongodb_2.ObjectId.isValid(id)) {
+                return false;
+            }
             let blog = yield mongodb_1.client.db('blogPlatform').collection('blogs').findOne({ _id: new mongodb_2.ObjectId(id) });
             if (blog) {
                 const { _id } = blog, el = __rest(blog, ["_id"]);
@@ -55,11 +55,12 @@ exports.blogRepository = {
                 description: req.description,
                 websiteUrl: req.websiteUrl,
                 createdAt: new Date().toISOString(),
-                isMembership: true
+                isMembership: false
             };
             yield mongodb_1.client.db('blogPlatform').collection('blogs').insertOne(newBlog);
             const { _id } = newBlog, el = __rest(newBlog, ["_id"]);
-            return Object.assign({ id: _id === null || _id === void 0 ? void 0 : _id.toString() }, el);
+            return Object.assign({ id: _id.toString() }, el);
+            console.log(newBlog);
         });
     },
     updateBlog(id, req) {
@@ -81,11 +82,4 @@ exports.blogRepository = {
             return result.deletedCount === 1;
         });
     },
-    cleanBlogsDB() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const blogsResult = yield mongodb_1.client.db('blogPlatform').collection('blogs').deleteMany({});
-            const postsResult = yield mongodb_1.client.db('blogPlatform').collection('posts').deleteMany({});
-            return blogsResult.deletedCount === 1 && postsResult.deletedCount === 1;
-        });
-    }
 };

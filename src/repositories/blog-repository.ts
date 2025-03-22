@@ -12,10 +12,11 @@ export const blogRepository = {
         }));
     },
 
-    async findBlogById(id: string): Promise<blogType | null> {
-        // if (!ObjectId.isValid(id)) {
-        //     return true
-        // }
+    async findBlogById(id: string): Promise<blogType | null | boolean> {
+        if (!ObjectId.isValid(id)) {
+            return false
+        }
+
         let blog: dbBlogType | null = await client.db('blogPlatform').collection<dbBlogType>('blogs').findOne({_id: new ObjectId(id)})
         if (blog) {
             const {_id, ...el} = blog
@@ -31,12 +32,13 @@ export const blogRepository = {
             description: req.description,
             websiteUrl: req.websiteUrl,
             createdAt: new Date().toISOString(),
-            isMembership: true
+            isMembership: false
         }
         await client.db('blogPlatform').collection<dbBlogType>('blogs').insertOne(newBlog)
 
         const {_id, ...el} = newBlog
-        return {id: _id?.toString(), ...el}
+        return {id: _id!.toString(), ...el}
+        console.log(newBlog)
     },
 
     async updateBlog(id: any, req: any): Promise<blogType[] | boolean> {
@@ -56,10 +58,6 @@ export const blogRepository = {
         return result.deletedCount === 1
     },
 
-    async cleanBlogsDB(): Promise<boolean> {
-        const blogsResult = await client.db('blogPlatform').collection('blogs').deleteMany({})
-        const postsResult = await client.db('blogPlatform').collection('posts').deleteMany({})
-        return blogsResult.deletedCount === 1 && postsResult.deletedCount === 1
-    }
+
 }
 

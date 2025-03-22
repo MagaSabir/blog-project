@@ -61,7 +61,4 @@ export const blogRoutes = Router()
         }
         res.sendStatus(404)
     })
-    .delete('/', async (req: Request, res: Response) => {
-        const blog = await blogRepository.cleanBlogsDB()
-        res.sendStatus(204)
-    })
+

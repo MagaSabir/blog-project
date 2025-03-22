@@ -60,8 +60,4 @@ exports.blogRoutes = (0, express_1.Router)()
         return;
     }
     res.sendStatus(404);
-}))
-    .delete('/', authMiddleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const blog = yield blog_repository_1.blogRepository.cleanBlogsDB();
-    res.sendStatus(204);
 }));

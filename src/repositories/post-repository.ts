@@ -28,7 +28,7 @@ export const postRepository = {
         let blogName = (await blogRepository.findAllBlogs()).find((el => el.name))
         const newPost: newPostType = {
             title: body.title,
-            description: body.shortDescription,
+            shortDescription: body.shortDescription,
             content: body.content,
             blogId: body.blogId,
             blogName: blogName?.name,

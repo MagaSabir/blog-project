@@ -52,7 +52,7 @@ exports.postRepository = {
             let blogName = (yield blog_repository_1.blogRepository.findAllBlogs()).find((el => el.name));
             const newPost = {
                 title: body.title,
-                description: body.shortDescription,
+                shortDescription: body.shortDescription,
                 content: body.content,
                 blogId: body.blogId,
                 blogName: blogName === null || blogName === void 0 ? void 0 : blogName.name,

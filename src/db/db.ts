@@ -37,7 +37,7 @@ export type postType = {
 export type newPostType = {
     _id?: ObjectId | undefined
     title: any
-    description: any
+    shortDescription: any
     content: string
     blogId: string
     blogName: string | undefined

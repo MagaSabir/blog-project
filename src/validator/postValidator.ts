@@ -13,5 +13,4 @@ export const blogIdValidator = body('blogId').isString().withMessage('not string
     .trim().custom(async blogId => {
         console.log(await blogRepository.findBlogById(blogId))
         return await blogRepository.findBlogById(blogId) ? true : false
-
     }).withMessage('no blog')

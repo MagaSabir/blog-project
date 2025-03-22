@@ -5,6 +5,7 @@ import {SETTINGS} from "./settings";
 import {descriptionValidator, nameValidator, websiteUrlValidator} from "./validator/blogValidator";
 import {postsRoutes} from "./routes/posts/postRoutes";
 import {contentValidator, shortDescriptionValidator, titleValidator} from "./validator/postValidator";
+import {cleanDbRoutes} from "./routes/cleanDb/cleanDbRoute";
 
 
 export const app = express();
@@ -13,5 +14,5 @@ app.use(SETTINGS.PATH.posts, postsRoutes, titleValidator, shortDescriptionValida
 app.use(SETTINGS.PATH.blogs, blogRoutes, nameValidator, descriptionValidator, websiteUrlValidator)
 
 
-app.use(SETTINGS.PATH.cleanDB, blogRoutes)
+app.use(SETTINGS.PATH.cleanDB, cleanDbRoutes)
 
