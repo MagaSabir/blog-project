@@ -12,7 +12,7 @@ import {authMiddleware} from "../../../middlewares/authMiddleware";
 export const blogRoutes = Router()
 
     .get('/', async (req: Request, res: Response) => {
-        res.status(200).send(await blogRepository.findBlog()
+        res.status(200).send(await blogRepository.findAllBlogs()
         )
     })
 
@@ -65,9 +65,3 @@ export const blogRoutes = Router()
         const blog = await blogRepository.cleanBlogsDB()
         res.sendStatus(204)
     })
-
-// blogRoutes.delete('/', async (req: Request, res: Response) => {
-//     db.blogs = []
-//     db.posts = []
-//     res.sendStatus(204)
-// })

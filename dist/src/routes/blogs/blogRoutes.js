@@ -17,7 +17,7 @@ const blogValidator_1 = require("../../validator/blogValidator");
 const authMiddleware_1 = require("../../../middlewares/authMiddleware");
 exports.blogRoutes = (0, express_1.Router)()
     .get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.status(200).send(yield blog_repository_1.blogRepository.findBlog());
+    res.status(200).send(yield blog_repository_1.blogRepository.findAllBlogs());
 }))
     .get('/:id', blogValidator_1.nameValidator, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const blog = yield blog_repository_1.blogRepository.findBlogById(req.params.id);
@@ -65,8 +65,3 @@ exports.blogRoutes = (0, express_1.Router)()
     const blog = yield blog_repository_1.blogRepository.cleanBlogsDB();
     res.sendStatus(204);
 }));
-// blogRoutes.delete('/', async (req: Request, res: Response) => {
-//     db.blogs = []
-//     db.posts = []
-//     res.sendStatus(204)
-// })
