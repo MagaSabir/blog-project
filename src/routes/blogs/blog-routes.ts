@@ -5,7 +5,7 @@ import {
     descriptionValidator,
     nameValidator,
     websiteUrlValidator
-} from "../../validator/blogValidator";
+} from "../../validator/blog-validations";
 import {authMiddleware} from "../../../middlewares/authMiddleware";
 
 

@@ -4,7 +4,7 @@ import {ObjectId} from "mongodb";
 import {blogRepository} from "./blog-repository";
 
 export const postRepository = {
-    async findPost(): Promise<dbPostType[]> {
+    async getPosts(): Promise<dbPostType[]> {
         const post = await client.db('blogPlatform').collection<dbPostType>('posts').find({}).toArray()
         return post.map(({_id, ...el}) => ({
             ...el,
@@ -12,7 +12,7 @@ export const postRepository = {
         }))
 
     },
-    async findPostById(id: string): Promise<postType | null> {
+    async getPostsById(id: string): Promise<postType | null> {
         let post = await client.db('blogPlatform').collection<dbPostType>('posts').findOne({_id: new ObjectId(id)})
         console.log(post)
         if (post) {

@@ -1,11 +1,11 @@
 import express, {Request, Response} from "express";
-import {blogRoutes} from "./routes/blogs/blogRoutes";
+import {blogRoutes} from "./routes/blogs/blog-routes";
 import {SETTINGS} from "./settings";
 
-import {descriptionValidator, nameValidator, websiteUrlValidator} from "./validator/blogValidator";
-import {postsRoutes} from "./routes/posts/postRoutes";
-import {contentValidator, shortDescriptionValidator, titleValidator} from "./validator/postValidator";
-import {cleanDbRoutes} from "./routes/cleanDb/cleanDbRoute";
+import {descriptionValidator, nameValidator, websiteUrlValidator} from "./validator/blog-validations";
+import {postsRoutes} from "./routes/posts/post-routes";
+import {contentValidator, shortDescriptionValidator, titleValidator} from "./validator/post-validations";
+import {cleanDbRoutes} from "./routes/cleanDb/cleanDb-route";
 
 
 export const app = express();

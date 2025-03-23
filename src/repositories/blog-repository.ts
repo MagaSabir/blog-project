@@ -16,7 +16,6 @@ export const blogRepository = {
         if (!ObjectId.isValid(id)) {
             return false
         }
-
         let blog: dbBlogType | null = await client.db('blogPlatform').collection<dbBlogType>('blogs').findOne({_id: new ObjectId(id)})
         if (blog) {
             const {_id, ...el} = blog
@@ -38,7 +37,6 @@ export const blogRepository = {
 
         const {_id, ...el} = newBlog
         return {id: _id!.toString(), ...el}
-        console.log(newBlog)
     },
 
     async updateBlog(id: any, req: any): Promise<blogType[] | boolean> {

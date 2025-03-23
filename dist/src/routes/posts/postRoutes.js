@@ -18,10 +18,10 @@ const db_1 = require("../../db/db");
 exports.postsRoutes = (0, express_1.Router)();
 exports.postsRoutes
     .get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.status(200).send(yield post_repository_1.postRepository.findPost());
+    res.status(200).send(yield post_repository_1.postRepository.getPosts());
 }))
     .get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const post = yield post_repository_1.postRepository.findPostById(req.params.id);
+    const post = yield post_repository_1.postRepository.getPostsById(req.params.id);
     if (post) {
         res.status(200).send(post);
         return;

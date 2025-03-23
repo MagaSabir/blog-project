@@ -5,7 +5,7 @@ import {
     contentValidator,
     shortDescriptionValidator,
     titleValidator
-} from "../../validator/postValidator";
+} from "../../validator/post-validations";
 import {authMiddleware} from "../../../middlewares/authMiddleware";
 import {errorsArray} from "../../db/db";
 
@@ -15,10 +15,10 @@ export const postsRoutes = Router()
 
 postsRoutes
     .get('/', async (req: Request, res: Response) => {
-        res.status(200).send(await postRepository.findPost())
+        res.status(200).send(await postRepository.getPosts())
     })
     .get('/:id', async (req: Request, res: Response) => {
-        const post = await postRepository.findPostById(req.params.id)
+        const post = await postRepository.getPostsById(req.params.id)
         if (post) {
             res.status(200).send(post)
             return

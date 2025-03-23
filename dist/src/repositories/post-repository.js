@@ -25,7 +25,7 @@ const mongodb_1 = require("../db/mongodb");
 const mongodb_2 = require("mongodb");
 const blog_repository_1 = require("./blog-repository");
 exports.postRepository = {
-    findPost() {
+    getPosts() {
         return __awaiter(this, void 0, void 0, function* () {
             const post = yield mongodb_1.client.db('blogPlatform').collection('posts').find({}).toArray();
             return post.map((_a) => {
@@ -34,7 +34,7 @@ exports.postRepository = {
             });
         });
     },
-    findPostById(id) {
+    getPostsById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let post = yield mongodb_1.client.db('blogPlatform').collection('posts').findOne({ _id: new mongodb_2.ObjectId(id) });
             console.log(post);

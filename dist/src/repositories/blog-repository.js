@@ -60,7 +60,6 @@ exports.blogRepository = {
             yield mongodb_1.client.db('blogPlatform').collection('blogs').insertOne(newBlog);
             const { _id } = newBlog, el = __rest(newBlog, ["_id"]);
             return Object.assign({ id: _id.toString() }, el);
-            console.log(newBlog);
         });
     },
     updateBlog(id, req) {
