@@ -18,7 +18,7 @@ postsRoutes
         res.status(200).send(await postRepository.getPosts())
     })
     .get('/:id', async (req: Request, res: Response) => {
-        const post = await postRepository.getPostsById(req.params.id)
+        const post = await postRepository.getPostById(req.params.id)
         if (post) {
             res.status(200).send(post)
             return

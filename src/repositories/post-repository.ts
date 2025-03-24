@@ -12,7 +12,7 @@ export const postRepository = {
         }))
 
     },
-    async getPostsById(id: string): Promise<postType | null> {
+    async getPostById(id: string): Promise<postType | null> {
         let post = await client.db('blogPlatform').collection<dbPostType>('posts').findOne({_id: new ObjectId(id)})
         console.log(post)
         if (post) {

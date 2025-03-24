@@ -34,7 +34,7 @@ exports.postRepository = {
             });
         });
     },
-    getPostsById(id) {
+    getPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let post = yield mongodb_1.client.db('blogPlatform').collection('posts').findOne({ _id: new mongodb_2.ObjectId(id) });
             console.log(post);
