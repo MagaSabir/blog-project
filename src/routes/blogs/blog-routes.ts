@@ -7,17 +7,18 @@ import {
     websiteUrlValidator
 } from "../../validator/blog-validations";
 import {authMiddleware} from "../../../middlewares/authMiddleware";
+import {blogsService} from "../../domain/blogs-service";
 
 
 export const blogRoutes = Router()
 
     .get('/', async (req: Request, res: Response) => {
-        res.status(200).send(await blogRepository.findAllBlogs()
+        res.status(200).send(await blogsService.findBlogs()
         )
     })
 
     .get('/:id', nameValidator, async (req: Request, res: Response) => {
-        const blog = await blogRepository.findBlogById(req.params.id)
+        const blog = await blogsService.findBlogById(req.params.id)
         if (blog) {
             res.status(200).send(blog)
             return
@@ -33,7 +34,7 @@ export const blogRoutes = Router()
             res.status(400).send({errorsMessages: errors})
             return;
         }
-        res.status(201).send(await blogRepository.createBlog(req.body))
+        res.status(201).send(await blogsService.createBlog(req.body))
         return
     })
 

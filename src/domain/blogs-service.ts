@@ -1,29 +1,28 @@
 import {blogRepository} from "../repositories/blog-repository";
-import {blogType} from "../db/db";
+import {blogType, dbBlogType} from "../db/db";
+import {ObjectId} from "mongodb";
 
 
 export const blogsService = {
-    async findAllBlogs(): Promise<blogType[]> {
-        return blogRepository.findAllBlogs()
+    async findBlogs(): Promise<blogType[]> {
+        return await blogRepository.findAllBlogs()
     },
 
     async findBlogById(id: string): Promise<blogType | null | boolean> {
-        return blogRepository.findBlogById(id)
+        if (!ObjectId.isValid(id)) {
+            return null
+        }
+        const blog: dbBlogType | null = await blogRepository.findBlogById(id)
+        if (!blog) {
+            return null
+        }
+        const {_id, ...rest} = blog
+        return {id: _id?.toString(), ...rest}
     },
 
-    // async createBlog(req: any): Promise<blogType | any> {
-    //     const newBlog: newBlog = {
-    //         name: req.name,
-    //         description: req.description,
-    //         websiteUrl: req.websiteUrl,
-    //         createdAt: new Date().toISOString(),
-    //         isMembership: false
-    //     }
-    //     await client.db('blogPlatform').collection<dbBlogType>('blogs').insertOne(newBlog)
-    //
-    //     const {_id, ...el} = newBlog
-    //     return {id: _id!.toString(), ...el}
-    // },
+    async createBlog(body: string): Promise<blogType | any> {
+        return await blogRepository.createBlog(body)
+    },
     //
     // async updateBlog(id: any, req: any): Promise<blogType[] | boolean> {
     //     const updateDocument = {

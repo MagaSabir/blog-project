@@ -8,14 +8,14 @@ type blogDbType = {
 }
 
 export type dbBlogType = {
-    _id?: ObjectId | string,
+    _id?: ObjectId | string | undefined,
     name: string,
     description: string,
     websiteUrl: string
 }
 
 export type blogType = {
-    id: string | undefined,
+    id?: string | undefined,
     name: string,
     description: string,
     websiteUrl: string
@@ -54,7 +54,6 @@ export type newBlog = {
 }
 
 export const errorsArray = (req: any) => {
-
     // @ts-ignore
     return validationResult(req).formatWith((error: FieldValidationError) => ({
             message: error.msg,
