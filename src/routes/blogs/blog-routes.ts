@@ -39,14 +39,13 @@ export const blogRoutes = Router()
     })
 
     .put('/:id', authMiddleware, websiteUrlValidator, descriptionValidator, websiteUrlValidator, nameValidator, async (req: Request, res: Response) => {
-        const updatedBlog = await blogRepository.updateBlog(req.params.id, req.body)
         const errors = errorsArray(req)
         if (errors.length) {
             res.status(400).send({errorsMessages: errors})
             return
         }
+        const updatedBlog = await blogsService.updateBlog(req.params.id, req.body)
         if (updatedBlog) {
-            await blogRepository.updateBlog(req.params.id, req.body)
             res.sendStatus(204)
             return;
         }
@@ -55,7 +54,7 @@ export const blogRoutes = Router()
     })
 
     .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-        const blog = await blogRepository.deleteById(req.params.id)
+        const blog = await blogsService.deleteById(req.params.id)
         if (blog) {
             res.sendStatus(204)
             return

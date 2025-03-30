@@ -26,42 +26,31 @@ const mongodb_2 = require("mongodb");
 exports.blogRepository = {
     findAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            const blog = yield mongodb_1.client.db('blogPlatform').collection('blogs').find({}).toArray();
-            return blog.map((_a) => {
-                var { _id } = _a, el = __rest(_a, ["_id"]);
-                return (Object.assign({ id: _id.toString() }, el));
-            });
+            return yield mongodb_1.client.db('blogPlatform').collection('blogs').find({}).toArray();
         });
     },
     findBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield mongodb_1.client.db('blogPlatform').collection('blogs').findOne({ _id: new mongodb_2.ObjectId(id) });
+            return yield mongodb_1.client.db('blogPlatform')
+                .collection('blogs')
+                .findOne({ _id: new mongodb_2.ObjectId(id) });
         });
     },
     createBlog(body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newBlog = {
-                name: body.name,
-                description: body.description,
-                websiteUrl: body.websiteUrl,
-                createdAt: new Date().toISOString(),
-                isMembership: false
-            };
-            const result = yield mongodb_1.client.db('blogPlatform').collection('blogs').insertOne(newBlog);
-            const { _id } = newBlog, el = __rest(newBlog, ["_id"]);
-            return Object.assign({ id: result.insertedId.toString() }, el);
+            const result = yield mongodb_1.client.db('blogPlatform')
+                .collection('blogs')
+                .insertOne(body);
+            const { _id } = body, el = __rest(body, ["_id"]);
+            console.log(result.insertedId);
+            return Object.assign({ id: _id.toString() }, el);
         });
     },
     updateBlog(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const updateDocument = {
-                $set: {
-                    name: body.name,
-                    description: body.description,
-                    websiteUrl: body.websiteUrl,
-                },
-            };
-            const result = yield mongodb_1.client.db('blogPlatform').collection('blogs').updateOne({ _id: new mongodb_2.ObjectId(id) }, updateDocument);
+            const result = yield mongodb_1.client
+                .db('blogPlatform')
+                .collection('blogs').updateOne({ _id: new mongodb_2.ObjectId(id) }, { $set: body });
             return result.matchedCount === 1;
         });
     },

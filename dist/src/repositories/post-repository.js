@@ -23,44 +23,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postRepository = void 0;
 const mongodb_1 = require("../db/mongodb");
 const mongodb_2 = require("mongodb");
-const blog_repository_1 = require("./blog-repository");
 exports.postRepository = {
     getPosts() {
         return __awaiter(this, void 0, void 0, function* () {
-            const post = yield mongodb_1.client.db('blogPlatform').collection('posts').find({}).toArray();
-            return post.map((_a) => {
-                var { _id } = _a, el = __rest(_a, ["_id"]);
-                return (Object.assign(Object.assign({}, el), { id: _id.toString() }));
-            });
+            return yield mongodb_1.client.db('blogPlatform').collection('posts').find({}).toArray();
         });
     },
     getPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let post = yield mongodb_1.client.db('blogPlatform').collection('posts').findOne({ _id: new mongodb_2.ObjectId(id) });
-            console.log(post);
-            if (post) {
-                const { _id } = post, el = __rest(post, ["_id"]);
-                return Object.assign({ id: _id.toString() }, el);
-            }
-            else {
-                return null;
-            }
+            return yield mongodb_1.client.db('blogPlatform').collection('posts').findOne({ _id: new mongodb_2.ObjectId(id) });
         });
     },
     createPost(body) {
         return __awaiter(this, void 0, void 0, function* () {
-            let blogName = (yield blog_repository_1.blogRepository.findAllBlogs()).find((el => el.name));
-            const newPost = {
-                title: body.title,
-                shortDescription: body.shortDescription,
-                content: body.content,
-                blogId: body.blogId,
-                blogName: blogName === null || blogName === void 0 ? void 0 : blogName.name,
-                createdAt: new Date().toISOString()
-            };
-            yield mongodb_1.client.db('blogPlatform').collection('posts').insertOne(newPost);
-            const { _id } = newPost, el = __rest(newPost, ["_id"]);
-            return Object.assign({ id: _id }, el);
+            yield mongodb_1.client.db('blogPlatform').collection('posts').insertOne(body);
+            const { _id } = body, rest = __rest(body, ["_id"]);
+            return Object.assign({ id: _id.toString() }, rest);
         });
     },
     deleteById(id) {

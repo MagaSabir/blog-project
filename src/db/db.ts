@@ -28,14 +28,14 @@ export type dbPostType = {
 }
 
 export type postType = {
-    id: string
+    id?: string
     title: string
     shortDescription: string,
     content: string,
 }
 
 export type newPostType = {
-    _id?: ObjectId | undefined
+    id?: ObjectId | undefined
     title: any
     shortDescription: any
     content: string
@@ -52,6 +52,12 @@ export type newBlog = {
     createdAt: string,
     isMembership: boolean
 }
+
+export type CreateBlogInput = {
+    name: string;
+    description: string;
+    websiteUrl: string;
+};
 
 export const errorsArray = (req: any) => {
     // @ts-ignore

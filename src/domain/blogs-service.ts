@@ -1,11 +1,14 @@
 import {blogRepository} from "../repositories/blog-repository";
-import {blogType, dbBlogType} from "../db/db";
+import {blogType, CreateBlogInput, dbBlogType} from "../db/db";
 import {ObjectId} from "mongodb";
 
 
 export const blogsService = {
     async findBlogs(): Promise<blogType[]> {
-        return await blogRepository.findAllBlogs()
+        const blogs: dbBlogType[] = await blogRepository.findAllBlogs()
+        return blogs.map(({_id, ...rest}) => ({
+            id: _id?.toString(), ...rest
+        }))
     },
 
     async findBlogById(id: string): Promise<blogType | null | boolean> {
@@ -20,27 +23,30 @@ export const blogsService = {
         return {id: _id?.toString(), ...rest}
     },
 
-    async createBlog(body: string): Promise<blogType | any> {
-        return await blogRepository.createBlog(body)
+    async createBlog(body: CreateBlogInput): Promise<blogType | any> {
+        const newBlog = {
+            name: body.name,
+            description: body.description,
+            websiteUrl: body.websiteUrl,
+            createdAt: new Date().toISOString(),
+            isMembership: true
+        }
+        return await blogRepository.createBlog(newBlog)
+
     },
-    //
-    // async updateBlog(id: any, req: any): Promise<blogType[] | boolean> {
-    //     const updateDocument = {
-    //         $set: {
-    //             name: req.name,
-    //             description: req.description,
-    //             websiteUrl: req.websiteUrl,
-    //         },
-    //     };
-    //     const result = await client.db('blogPlatform').collection<dbBlogType>('blogs').updateOne({_id: new ObjectId(id)}, updateDocument)
-    //     return result.matchedCount === 1
-    // },
-    //
-    // async deleteById(id: string): Promise<blogType[] | boolean> {
-    //     const result = await client.db('blogPlatform').collection<dbBlogType>('blogs').deleteOne({_id: new ObjectId(id)})
-    //     return result.deletedCount === 1
-    // },
 
+    async updateBlog(id: any, body: CreateBlogInput): Promise<blogType[] | boolean> {
+        const updatedBlog = {
+            name: body.name,
+            description: body.description,
+            websiteUrl: body.websiteUrl
+        }
+        return await blogRepository.updateBlog(id, updatedBlog)
+    },
 
+    async deleteById(id: string): Promise<blogType[] | boolean> {
+        return await blogRepository.deleteById(id)
+
+    },
 }
 

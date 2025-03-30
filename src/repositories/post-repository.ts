@@ -5,38 +5,17 @@ import {blogRepository} from "./blog-repository";
 
 export const postRepository = {
     async getPosts(): Promise<dbPostType[]> {
-        const post = await client.db('blogPlatform').collection<dbPostType>('posts').find({}).toArray()
-        return post.map(({_id, ...el}) => ({
-            ...el,
-            id: _id.toString()
-        }))
-
+        return await client.db('blogPlatform').collection<dbPostType>('posts').find({}).toArray()
     },
     async getPostById(id: string): Promise<postType | null> {
-        let post = await client.db('blogPlatform').collection<dbPostType>('posts').findOne({_id: new ObjectId(id)})
-        console.log(post)
-        if (post) {
-            const {_id, ...el} = post
-            return {id: _id.toString(), ...el}
-        } else {
-            return null
-        }
+        return await client.db('blogPlatform').collection<dbPostType>('posts').findOne({_id: new ObjectId(id)})
     },
 
 
-    async createPost(body: any) {
-        let blogName = (await blogRepository.findAllBlogs()).find((el => el.name))
-        const newPost: newPostType = {
-            title: body.title,
-            shortDescription: body.shortDescription,
-            content: body.content,
-            blogId: body.blogId,
-            blogName: blogName?.name,
-            createdAt: new Date().toISOString()
-        }
-        await client.db('blogPlatform').collection('posts').insertOne(newPost)
-        const {_id, ...el} = newPost
-        return {id: _id, ...el}
+    async createPost(body: any): Promise<postType> {
+        await client.db('blogPlatform').collection('posts').insertOne(body)
+        const {_id, ...rest}: any = body
+        return {id: _id.toString(), ...rest}
     },
 
 

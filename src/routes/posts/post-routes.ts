@@ -8,6 +8,7 @@ import {
 } from "../../validator/post-validations";
 import {authMiddleware} from "../../../middlewares/authMiddleware";
 import {errorsArray} from "../../db/db";
+import {postsService} from "../../domain/posts-service";
 
 
 export const postsRoutes = Router()
@@ -15,10 +16,10 @@ export const postsRoutes = Router()
 
 postsRoutes
     .get('/', async (req: Request, res: Response) => {
-        res.status(200).send(await postRepository.getPosts())
+        res.status(200).send(await postsService.getPosts())
     })
     .get('/:id', async (req: Request, res: Response) => {
-        const post = await postRepository.getPostById(req.params.id)
+        const post = await postsService.getPostById(req.params.id)
         if (post) {
             res.status(200).send(post)
             return
@@ -42,9 +43,8 @@ postsRoutes
             res.status(400).send({errorsMessages: errors})
             return
         }
-        res.status(201).send(await postRepository.createPost(req.body))
+        res.status(201).send(await postsService.createPost(req.body))
         return
-
     })
 
 
