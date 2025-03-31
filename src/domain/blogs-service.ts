@@ -31,8 +31,7 @@ export const blogsService = {
             createdAt: new Date().toISOString(),
             isMembership: true
         }
-        return await blogRepository.createBlog(newBlog)
-
+         return  await blogRepository.createBlog(newBlog)
     },
 
     async updateBlog(id: any, body: CreateBlogInput): Promise<blogType[] | boolean> {
@@ -43,6 +42,7 @@ export const blogsService = {
         }
         return await blogRepository.updateBlog(id, updatedBlog)
     },
+
 
     async deleteById(id: string): Promise<blogType[] | boolean> {
         return await blogRepository.deleteById(id)

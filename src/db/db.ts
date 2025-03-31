@@ -28,7 +28,7 @@ export type dbPostType = {
 }
 
 export type postType = {
-    id?: string
+    _id?: string
     title: string
     shortDescription: string,
     content: string,

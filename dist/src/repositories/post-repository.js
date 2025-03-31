@@ -43,20 +43,17 @@ exports.postRepository = {
     },
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield mongodb_1.client.db('blogPlatform').collection('posts').deleteOne({ _id: new mongodb_2.ObjectId(id) });
+            const result = yield mongodb_1.client.db('blogPlatform')
+                .collection('posts')
+                .deleteOne({ _id: new mongodb_2.ObjectId(id) });
             return result.deletedCount === 1;
         });
     },
-    updatePost(id, req) {
+    updatePost(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const updateDocument = {
-                $set: {
-                    title: req.title,
-                    shortDescription: req.shortDescription,
-                    content: req.content,
-                },
-            };
-            const result = yield mongodb_1.client.db('blogPlatform').collection('posts').updateOne({ _id: new mongodb_2.ObjectId(id) }, updateDocument);
+            const result = yield mongodb_1.client.db('blogPlatform')
+                .collection('posts')
+                .updateOne({ _id: new mongodb_2.ObjectId(id) }, { $set: body });
             return result.matchedCount === 1;
         });
     },

@@ -20,19 +20,18 @@ export const postRepository = {
 
 
     async deleteById(id: string): Promise<postType | boolean> {
-        const result = await client.db('blogPlatform').collection<dbBlogType>('posts').deleteOne({_id: new ObjectId(id)})
+        const result = await client.db('blogPlatform')
+            .collection<dbBlogType>('posts')
+            .deleteOne({_id: new ObjectId(id)})
         return result.deletedCount === 1
     },
 
-    async updatePost(id: any, req: any): Promise<postType[] | boolean> {
-        const updateDocument = {
-            $set: {
-                title: req.title,
-                shortDescription: req.shortDescription,
-                content: req.content,
-            },
-        };
-        const result = await client.db('blogPlatform').collection<dbBlogType>('posts').updateOne({_id: new ObjectId(id)}, updateDocument)
+    async updatePost(id: any, body: any): Promise<postType[] | boolean> {
+        const result = await client.db('blogPlatform')
+            .collection<dbBlogType>('posts')
+            .updateOne(
+                {_id: new ObjectId(id)},
+                {$set:body})
         return result.matchedCount === 1
     },
 

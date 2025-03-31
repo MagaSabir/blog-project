@@ -7,7 +7,7 @@ import {
     titleValidator
 } from "../../validator/post-validations";
 import {authMiddleware} from "../../../middlewares/authMiddleware";
-import {errorsArray} from "../../db/db";
+import {errorsArray, postType} from "../../db/db";
 import {postsService} from "../../domain/posts-service";
 
 
@@ -29,7 +29,7 @@ postsRoutes
     })
 
     .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-        const blog = await postRepository.deleteById(req.params.id)
+        const blog = await postsService.deletePostById(req.params.id)
         if (blog) {
             res.sendStatus(204)
             return
@@ -56,7 +56,7 @@ postsRoutes
             return;
         }
         if (updatedPost) {
-            await postRepository.updatePost(req.params.id, req.body)
+            await postsService.updatePost(req.params.id, req.body)
             res.sendStatus(204)
             return
         }

@@ -4,9 +4,10 @@ import {postRepository} from "../repositories/post-repository";
 
 export const postsService = {
     async getPosts(): Promise<postType[]> {
-        const result = await postRepository.getPosts()
-        const {_id, ...rest}: any = result
-        return {id: _id.toString(), ...rest}
+        const result: postType[] = await postRepository.getPosts()
+        return result.map(({_id, ...rest}) => ({
+            id: _id?.toString(), ...rest
+        }))
     },
 
     async getPostById(id: string): Promise<postType | null> {
@@ -19,7 +20,7 @@ export const postsService = {
     },
 
     async createPost(body: createdPost): Promise<postType | null> {
-        let blogName = (await blogRepository.findAllBlogs()).find((el => el.name))
+        const blogName = (await blogRepository.findAllBlogs()).find((el => el.name))
         const newPost: newPostType = {
             title: body.title,
             shortDescription: body.shortDescription,
@@ -29,13 +30,29 @@ export const postsService = {
             createdAt: new Date().toISOString()
         }
         return await postRepository.createPost(newPost)
+    },
+
+    async updatePost(id: string, body: createdPost): Promise<postType[] | boolean> {
+        const updatedPost = {
+            title: body.title,
+            shortDescription: body.shortDescription,
+            websiteUrl: body.websiteUrl,
+            content: body.content,
+            blogId: body.blogId
+        }
+        return await postRepository.updatePost(id, updatedPost)
+    },
+
+    async deletePostById(id: string): Promise<postType | boolean> {
+        return await postRepository.deleteById(id)
     }
 }
 
 type createdPost = {
     title: string,
-    shortDescription: string,
+    shortDescription: string
+    websiteUrl?: string,
     content: string,
     blogId: string,
-    blogName: string
+    blogName?: string
 }
