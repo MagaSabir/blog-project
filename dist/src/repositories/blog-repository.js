@@ -24,9 +24,24 @@ exports.blogRepository = void 0;
 const mongodb_1 = require("../db/mongodb");
 const mongodb_2 = require("mongodb");
 exports.blogRepository = {
+    findAllBlogsPagination(page, limit, sortDirection, searchNameTerm) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const total = yield mongodb_1.client.db('blogPlatform').collection('blogs').countDocuments();
+            const filter = searchNameTerm
+                ? { name: { $regex: searchNameTerm, $options: 'i' } }
+                : {};
+            const result = yield mongodb_1.client.db('blogPlatform').collection('blogs')
+                .find(filter)
+                .skip((page - 1) * limit)
+                .limit(limit)
+                .sort({ createdAt: sortDirection }).toArray();
+            return { total, result };
+        });
+    },
     findAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield mongodb_1.client.db('blogPlatform').collection('blogs').find({}).toArray();
+            return yield mongodb_1.client.db('blogPlatform').collection('blogs')
+                .find({}).toArray();
         });
     },
     findBlogById(id) {
@@ -38,11 +53,10 @@ exports.blogRepository = {
     },
     createBlog(body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield mongodb_1.client.db('blogPlatform')
+            yield mongodb_1.client.db('blogPlatform')
                 .collection('blogs')
                 .insertOne(body);
             const { _id } = body, el = __rest(body, ["_id"]);
-            console.log(result.insertedId);
             return Object.assign({ id: _id.toString() }, el);
         });
     },

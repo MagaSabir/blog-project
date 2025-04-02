@@ -24,9 +24,15 @@ exports.postRepository = void 0;
 const mongodb_1 = require("../db/mongodb");
 const mongodb_2 = require("mongodb");
 exports.postRepository = {
-    getPosts() {
+    getPosts(page, limit, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield mongodb_1.client.db('blogPlatform').collection('posts').find({}).toArray();
+            const total = yield mongodb_1.client.db('blogPlatform').collection('posts').countDocuments();
+            const result = yield mongodb_1.client.db('blogPlatform').collection('posts')
+                .find()
+                .skip((page - 1) * limit)
+                .limit(limit)
+                .sort({ createdAt: sortDirection }).toArray();
+            return { total, result };
         });
     },
     getPostById(id) {

@@ -24,13 +24,15 @@ exports.blogsService = void 0;
 const blog_repository_1 = require("../repositories/blog-repository");
 const mongodb_1 = require("mongodb");
 exports.blogsService = {
-    findBlogs() {
+    findAllBlogsPagination(page, limit, sortDirection, searchNameTerm) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blogs = yield blog_repository_1.blogRepository.findAllBlogs();
-            return blogs.map((_a) => {
+            const { total, result } = yield blog_repository_1.blogRepository.findAllBlogsPagination(page, limit, sortDirection, searchNameTerm);
+            // @ts-ignore
+            const post = result.map((_a) => {
                 var { _id } = _a, rest = __rest(_a, ["_id"]);
-                return (Object.assign({ id: _id === null || _id === void 0 ? void 0 : _id.toString() }, rest));
+                return (Object.assign({ id: _id.toString() }, rest));
             });
+            return { total, post };
         });
     },
     findBlogById(id) {
@@ -53,7 +55,7 @@ exports.blogsService = {
                 description: body.description,
                 websiteUrl: body.websiteUrl,
                 createdAt: new Date().toISOString(),
-                isMembership: true
+                isMembership: false
             };
             return yield blog_repository_1.blogRepository.createBlog(newBlog);
         });

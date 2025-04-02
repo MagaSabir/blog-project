@@ -24,13 +24,15 @@ exports.postsService = void 0;
 const blog_repository_1 = require("../repositories/blog-repository");
 const post_repository_1 = require("../repositories/post-repository");
 exports.postsService = {
-    getPosts() {
+    getPosts(page, limit, sortDirection) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield post_repository_1.postRepository.getPosts();
-            return result.map((_a) => {
+            const { total, result } = yield post_repository_1.postRepository.getPosts(page, limit, sortDirection);
+            // @ts-ignore
+            const post = result.map((_a) => {
                 var { _id } = _a, rest = __rest(_a, ["_id"]);
-                return (Object.assign({ id: _id === null || _id === void 0 ? void 0 : _id.toString() }, rest));
+                return (Object.assign({ id: _id.toString() }, rest));
             });
+            return { total, post };
         });
     },
     getPostById(id) {
@@ -44,6 +46,20 @@ exports.postsService = {
         });
     },
     createPost(body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const blogName = (yield blog_repository_1.blogRepository.findAllBlogs()).find((el => el.name));
+            const newPost = {
+                title: body.title,
+                shortDescription: body.shortDescription,
+                content: body.content,
+                blogId: body.blogId,
+                blogName: blogName === null || blogName === void 0 ? void 0 : blogName.name,
+                createdAt: new Date().toISOString()
+            };
+            return yield post_repository_1.postRepository.createPost(newPost);
+        });
+    },
+    createPostByBlogId(body) {
         return __awaiter(this, void 0, void 0, function* () {
             const blogName = (yield blog_repository_1.blogRepository.findAllBlogs()).find((el => el.name));
             const newPost = {

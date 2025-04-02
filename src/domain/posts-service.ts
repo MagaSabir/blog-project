@@ -1,13 +1,16 @@
 import {dbPostType, newPostType, postType} from "../db/db";
 import {blogRepository} from "../repositories/blog-repository";
 import {postRepository} from "../repositories/post-repository";
+import {param} from "express-validator";
 
 export const postsService = {
-    async getPosts(): Promise<postType[]> {
-        const result: postType[] = await postRepository.getPosts()
-        return result.map(({_id, ...rest}) => ({
-            id: _id?.toString(), ...rest
+    async getPosts(page: number, limit: number, sortDirection: any): Promise<any> {
+        const {total, result} = await postRepository.getPosts(page, limit, sortDirection)
+        // @ts-ignore
+        const post = result.map(({_id, ...rest}) => ({
+            id: _id!.toString(), ...rest
         }))
+        return {total, post}
     },
 
     async getPostById(id: string): Promise<postType | null> {
@@ -20,6 +23,19 @@ export const postsService = {
     },
 
     async createPost(body: createdPost): Promise<postType | null> {
+        const blogName = (await blogRepository.findAllBlogs()).find((el => el.name))
+        const newPost: newPostType = {
+            title: body.title,
+            shortDescription: body.shortDescription,
+            content: body.content,
+            blogId: body.blogId,
+            blogName: blogName?.name,
+            createdAt: new Date().toISOString()
+        }
+        return await postRepository.createPost(newPost)
+    },
+
+    async createPostByBlogId(body: createdPost): Promise<postType | null> {
         const blogName = (await blogRepository.findAllBlogs()).find((el => el.name))
         const newPost: newPostType = {
             title: body.title,
@@ -55,4 +71,10 @@ type createdPost = {
     content: string,
     blogId: string,
     blogName?: string
+}
+
+type cretePostById = {
+    title: string,
+    shortDescription: string,
+    content: string
 }

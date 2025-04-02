@@ -9,6 +9,8 @@ import {
 import {authMiddleware} from "../../../middlewares/authMiddleware";
 import {errorsArray, postType} from "../../db/db";
 import {postsService} from "../../domain/posts-service";
+import {client} from "../../db/mongodb";
+import {body} from "express-validator";
 
 
 export const postsRoutes = Router()
@@ -16,7 +18,19 @@ export const postsRoutes = Router()
 
 postsRoutes
     .get('/', async (req: Request, res: Response) => {
-        res.status(200).send(await postsService.getPosts())
+        const page = req.query.page ? +req.query.page : 1
+        const limit = req.query.limit ? +req.query.limit : 10
+        const sortDirection = req.query.sortDirection === 'asc' ? 1 : -1
+        const {total, post} = await postsService.getPosts(page, limit, sortDirection)
+
+        res.status(200).json({
+            pagesCount: Math.ceil(total / limit),
+            page,
+            pageSize: limit,
+            total,
+            items: post
+        })
+
     })
     .get('/:id', async (req: Request, res: Response) => {
         const post = await postsService.getPostById(req.params.id)

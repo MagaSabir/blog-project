@@ -19,7 +19,17 @@ const posts_service_1 = require("../../domain/posts-service");
 exports.postsRoutes = (0, express_1.Router)();
 exports.postsRoutes
     .get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.status(200).send(yield posts_service_1.postsService.getPosts());
+    const page = req.query.page ? +req.query.page : 1;
+    const limit = req.query.limit ? +req.query.limit : 10;
+    const sortDirection = req.query.sortDirection === 'asc' ? 1 : -1;
+    const { total, post } = yield posts_service_1.postsService.getPosts(page, limit, sortDirection);
+    res.status(200).json({
+        pagesCount: Math.ceil(total / limit),
+        page,
+        pageSize: limit,
+        total,
+        items: post
+    });
 }))
     .get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const post = yield posts_service_1.postsService.getPostById(req.params.id);

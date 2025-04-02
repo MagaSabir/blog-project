@@ -22,16 +22,19 @@ export type blogType = {
 }
 
 export type dbPostType = {
+    _id?: string
     title: string
     shortDescription: string,
     content: string,
 }
 
 export type postType = {
-    _id?: string
+    id?: string
     title: string
     shortDescription: string,
     content: string,
+    total: number,
+    result: []
 }
 
 export type newPostType = {

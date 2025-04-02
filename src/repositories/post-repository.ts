@@ -4,11 +4,18 @@ import {ObjectId} from "mongodb";
 import {blogRepository} from "./blog-repository";
 
 export const postRepository = {
-    async getPosts(): Promise<dbPostType[]> {
-        return await client.db('blogPlatform').collection<dbPostType>('posts').find({}).toArray()
+    async getPosts(page: number, limit: number, sortDirection: any): Promise<any> {
+        const total = await client.db('blogPlatform').collection('posts').countDocuments()
+        const result = await client.db('blogPlatform').collection<dbBlogType>('posts')
+
+            .find()
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .sort({createdAt: sortDirection}).toArray()
+        return {total, result}
     },
     async getPostById(id: string): Promise<postType | null> {
-        return await client.db('blogPlatform').collection<dbPostType>('posts').findOne({_id: new ObjectId(id)})
+        return await client.db('blogPlatform').collection<postType>('posts').findOne({_id: new ObjectId(id)})
     },
 
 
@@ -31,7 +38,7 @@ export const postRepository = {
             .collection<dbBlogType>('posts')
             .updateOne(
                 {_id: new ObjectId(id)},
-                {$set:body})
+                {$set: body})
         return result.matchedCount === 1
     },
 
