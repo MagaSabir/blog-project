@@ -8,7 +8,7 @@ type blogDbType = {
 }
 
 export type dbBlogType = {
-    _id?: ObjectId | string | undefined,
+    _id?: string | undefined,
     name: string,
     description: string,
     websiteUrl: string
@@ -47,14 +47,15 @@ export type newPostType = {
     createdAt: string
 }
 
-export type newBlog = {
-    _id?: string
-    name: string,
-    description: string,
-    websiteUrl: string,
-    createdAt: string,
-    isMembership: boolean
+export type createdPost = {
+    title: string,
+    shortDescription: string
+    websiteUrl?: string,
+    content: string,
+    blogId: string,
+    blogName?: string
 }
+
 
 export type CreateBlogInput = {
     name: string;

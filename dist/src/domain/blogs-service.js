@@ -24,9 +24,9 @@ exports.blogsService = void 0;
 const blog_repository_1 = require("../repositories/blog-repository");
 const mongodb_1 = require("mongodb");
 exports.blogsService = {
-    findAllBlogsPagination(page, limit, sortDirection, searchNameTerm) {
+    findAllBlogsPagination(page, limit, sortDirection, sortBy, searchNameTerm) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { total, result } = yield blog_repository_1.blogRepository.findAllBlogsPagination(page, limit, sortDirection, searchNameTerm);
+            const { total, result } = yield blog_repository_1.blogRepository.findAllBlogsPagination(page, limit, sortDirection, sortBy, searchNameTerm);
             // @ts-ignore
             const post = result.map((_a) => {
                 var { _id } = _a, rest = __rest(_a, ["_id"]);
@@ -73,6 +73,30 @@ exports.blogsService = {
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield blog_repository_1.blogRepository.deleteById(id);
+        });
+    },
+    createPostByBlogId(body, param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const blog = (yield blog_repository_1.blogRepository.findAllBlogs()).find((el => el.name));
+            const newPost = {
+                title: body.title,
+                shortDescription: body.shortDescription,
+                content: body.content,
+                blogId: param.id,
+                blogName: blog.name,
+                createdAt: new Date().toISOString()
+            };
+            return yield blog_repository_1.blogRepository.createPostByBlogId(newPost);
+        });
+    },
+    getPostsByBlogId(id, page, limit, sortDirection, sortBy) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { result, total } = yield blog_repository_1.blogRepository.getPostsByBlogId(id, page, limit, sortDirection, sortBy);
+            const post = result.map((_a) => {
+                var { _id } = _a, rest = __rest(_a, ["_id"]);
+                return (Object.assign({ id: _id.toString() }, rest));
+            });
+            return { post, total };
         });
     },
 };

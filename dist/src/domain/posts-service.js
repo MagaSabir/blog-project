@@ -59,26 +59,11 @@ exports.postsService = {
             return yield post_repository_1.postRepository.createPost(newPost);
         });
     },
-    createPostByBlogId(body) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const blogName = (yield blog_repository_1.blogRepository.findAllBlogs()).find((el => el.name));
-            const newPost = {
-                title: body.title,
-                shortDescription: body.shortDescription,
-                content: body.content,
-                blogId: body.blogId,
-                blogName: blogName === null || blogName === void 0 ? void 0 : blogName.name,
-                createdAt: new Date().toISOString()
-            };
-            return yield post_repository_1.postRepository.createPost(newPost);
-        });
-    },
     updatePost(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
             const updatedPost = {
                 title: body.title,
                 shortDescription: body.shortDescription,
-                websiteUrl: body.websiteUrl,
                 content: body.content,
                 blogId: body.blogId
             };

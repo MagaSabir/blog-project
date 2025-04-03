@@ -1,4 +1,4 @@
-import {dbPostType, newPostType, postType} from "../db/db";
+import {createdPost, dbPostType, newPostType, postType} from "../db/db";
 import {blogRepository} from "../repositories/blog-repository";
 import {postRepository} from "../repositories/post-repository";
 import {param} from "express-validator";
@@ -35,24 +35,10 @@ export const postsService = {
         return await postRepository.createPost(newPost)
     },
 
-    async createPostByBlogId(body: createdPost): Promise<postType | null> {
-        const blogName = (await blogRepository.findAllBlogs()).find((el => el.name))
-        const newPost: newPostType = {
-            title: body.title,
-            shortDescription: body.shortDescription,
-            content: body.content,
-            blogId: body.blogId,
-            blogName: blogName?.name,
-            createdAt: new Date().toISOString()
-        }
-        return await postRepository.createPost(newPost)
-    },
-
     async updatePost(id: string, body: createdPost): Promise<postType[] | boolean> {
         const updatedPost = {
             title: body.title,
             shortDescription: body.shortDescription,
-            websiteUrl: body.websiteUrl,
             content: body.content,
             blogId: body.blogId
         }
@@ -64,17 +50,4 @@ export const postsService = {
     }
 }
 
-type createdPost = {
-    title: string,
-    shortDescription: string
-    websiteUrl?: string,
-    content: string,
-    blogId: string,
-    blogName?: string
-}
 
-type cretePostById = {
-    title: string,
-    shortDescription: string,
-    content: string
-}

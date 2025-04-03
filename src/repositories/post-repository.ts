@@ -7,7 +7,6 @@ export const postRepository = {
     async getPosts(page: number, limit: number, sortDirection: any): Promise<any> {
         const total = await client.db('blogPlatform').collection('posts').countDocuments()
         const result = await client.db('blogPlatform').collection<dbBlogType>('posts')
-
             .find()
             .skip((page - 1) * limit)
             .limit(limit)
@@ -28,14 +27,14 @@ export const postRepository = {
 
     async deleteById(id: string): Promise<postType | boolean> {
         const result = await client.db('blogPlatform')
-            .collection<dbBlogType>('posts')
+            .collection<dbBlogType[]>('posts')
             .deleteOne({_id: new ObjectId(id)})
         return result.deletedCount === 1
     },
 
     async updatePost(id: any, body: any): Promise<postType[] | boolean> {
         const result = await client.db('blogPlatform')
-            .collection<dbBlogType>('posts')
+            .collection<dbBlogType[]>('posts')
             .updateOne(
                 {_id: new ObjectId(id)},
                 {$set: body})

@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {db, errorsArray} from "../../db/db";
+import {blogType, db, errorsArray, postType} from "../../db/db";
 import {blogRepository} from "../../repositories/blog-repository";
 import {
     descriptionValidator,
@@ -16,6 +16,7 @@ import {
     titleValidator
 } from "../../validator/post-validations";
 import {postsService} from "../../domain/posts-service";
+import * as string_decoder from "node:string_decoder";
 
 
 export const blogRoutes = Router()
@@ -24,18 +25,17 @@ export const blogRoutes = Router()
         const pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1
         const pageSize = req.query.pageSize ? +req.query.pageSize : 10
         const sortDirection = req.query.sortDirection === 'asc' ? 1 : -1
-        const searchNameTerm: any = req.query.searchNameTerm
-
+        const searchNameTerm = req.query.searchNameTerm
+        const sortBy = req.query.sortBy || 'createdAt'
         const {
             total,
             post
-        } = await blogsService.findAllBlogsPagination(pageNumber, pageSize, sortDirection, searchNameTerm)
-
+        } = await blogsService.findAllBlogsPagination(pageNumber, pageSize, sortDirection, sortBy, searchNameTerm)
         res.status(200).json({
             pagesCount: Math.ceil(total / pageSize),
-            pageNumber,
+            page:pageNumber,
             pageSize: pageSize,
-            total,
+            totalCount:total,
             items: post
         })
     })
@@ -51,16 +51,6 @@ export const blogRoutes = Router()
         }
     })
 
-
-    .post('/:id/posts', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, async (req: Request, res: Response,) => {
-        const errors = errorsArray(req)
-        if (errors.length) {
-            res.status(400).send({errorsMessages: errors})
-            return
-        }
-        res.status(201).send(await postsService.createPost(req.body, req.params))
-        return
-    })
 
     .post('/', authMiddleware, websiteUrlValidator, descriptionValidator, nameValidator, async (req: Request, res: Response) => {
         const errors = errorsArray(req)
@@ -96,4 +86,48 @@ export const blogRoutes = Router()
         }
         res.sendStatus(404)
     })
+
+
+
+
+.post('/:id/posts',authMiddleware,titleValidator, shortDescriptionValidator, contentValidator, async (req: Request, res: Response): Promise<void> => {
+    const blog = await blogsService.createPostByBlogId(req.body, req.params)
+
+    const errors = errorsArray(req)
+    if (errors.length) {
+        res.status(400).send({errorsMessages: errors})
+        return
+    }
+
+    if(!await blogsService.findBlogById(blog.blogId)) {
+        res.sendStatus(404)
+        return
+    }
+    res.status(201).send(await blogsService.createPostByBlogId(req.body, req.params))
+    return
+})
+
+.get('/:id/posts', async (req: Request, res: Response)  => {
+    const id = req.params.id
+    const pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1
+    const pageSize = req.query.pageSize ? +req.query.pageSize : 10
+    const sortDirection = req.query.sortDirection === 'asc' ? 1 : -1
+    const sortBy = req.query.sortBy || 'createdAt'
+    const {post, total} = await blogsService.getPostsByBlogId(id, pageNumber, pageSize, sortDirection, sortBy)
+
+    if(!post.length) {
+        res.sendStatus(404)
+        return
+    }
+    else { res.status(200).json({
+        pagesCount: Math.ceil(total / pageSize),
+        page: pageNumber,
+        pageSize:pageSize,
+        totalCount: total,
+        items: post
+    })}
+
+})
+
+
 
