@@ -77,7 +77,9 @@ exports.blogsService = {
     },
     createPostByBlogId(body, param) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blog = (yield blog_repository_1.blogRepository.findAllBlogs()).find((el => el.name));
+            //todo fix
+            // const blog = (await blogRepository.findAllBlogs()).find((el => el.name))
+            const blog = (yield blog_repository_1.blogRepository.findBlogById(param));
             const newPost = {
                 title: body.title,
                 shortDescription: body.shortDescription,
@@ -92,6 +94,9 @@ exports.blogsService = {
     getPostsByBlogId(id, page, limit, sortDirection, sortBy) {
         return __awaiter(this, void 0, void 0, function* () {
             const { result, total } = yield blog_repository_1.blogRepository.getPostsByBlogId(id, page, limit, sortDirection, sortBy);
+            if (!result) {
+                return null;
+            }
             const post = result.map((_a) => {
                 var { _id } = _a, rest = __rest(_a, ["_id"]);
                 return (Object.assign({ id: _id.toString() }, rest));

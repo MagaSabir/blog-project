@@ -29,8 +29,10 @@ exports.blogRepository = {
             const filter = searchNameTerm
                 ? { name: { $regex: searchNameTerm, $options: 'i' } }
                 : {};
-            const total = yield mongodb_1.client.db('blogPlatform').collection('blogs').countDocuments(filter);
-            const result = yield mongodb_1.client.db('blogPlatform').collection('blogs')
+            const total = yield mongodb_1.client.db('blogPlatform')
+                .collection('blogs').countDocuments(filter);
+            const result = yield mongodb_1.client.db('blogPlatform')
+                .collection('blogs')
                 .find(filter)
                 .skip((page - 1) * limit)
                 .limit(limit)
@@ -70,7 +72,8 @@ exports.blogRepository = {
     },
     deleteById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield mongodb_1.client.db('blogPlatform').collection('blogs').deleteOne({ _id: new mongodb_2.ObjectId(id) });
+            const result = yield mongodb_1.client.db('blogPlatform')
+                .collection('blogs').deleteOne({ _id: new mongodb_2.ObjectId(id) });
             return result.deletedCount === 1;
         });
     },
@@ -83,7 +86,8 @@ exports.blogRepository = {
     },
     getPostsByBlogId(id, page, limit, sortDirection, sortBy) {
         return __awaiter(this, void 0, void 0, function* () {
-            const total = yield mongodb_1.client.db('blogPlatform').collection('posts').countDocuments({ blogId: id });
+            const total = yield mongodb_1.client.db('blogPlatform')
+                .collection('posts').countDocuments({ blogId: id });
             const result = yield mongodb_1.client.db('blogPlatform').collection('posts')
                 .find({ blogId: id })
                 .skip((page - 1) * limit)

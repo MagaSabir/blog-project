@@ -74,17 +74,20 @@ exports.blogRoutes = (0, express_1.Router)()
     res.sendStatus(404);
 }))
     .post('/:id/posts', authMiddleware_1.authMiddleware, post_validations_1.titleValidator, post_validations_1.shortDescriptionValidator, post_validations_1.contentValidator, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const blog = yield blogs_service_1.blogsService.createPostByBlogId(req.body, req.params);
+    //const blog = await blogsService.createPostByBlogId(req.body, req.params)
     const errors = (0, db_1.errorsArray)(req);
     if (errors.length) {
         res.status(400).send({ errorsMessages: errors });
         return;
     }
-    if (!(yield blogs_service_1.blogsService.findBlogById(blog.blogId))) {
+    const blogId = req.params.id;
+    const blog = yield blogs_service_1.blogsService.findBlogById(blogId);
+    if (!blog) {
         res.sendStatus(404);
         return;
     }
-    res.status(201).send(yield blogs_service_1.blogsService.createPostByBlogId(req.body, req.params));
+    const post = yield blogs_service_1.blogsService.createPostByBlogId(req.body, req.params);
+    res.status(201).send(post);
     return;
 }))
     .get('/:id/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -96,15 +99,14 @@ exports.blogRoutes = (0, express_1.Router)()
     const { post, total } = yield blogs_service_1.blogsService.getPostsByBlogId(id, pageNumber, pageSize, sortDirection, sortBy);
     if (!post.length) {
         res.sendStatus(404);
+        console.log(post);
         return;
     }
-    else {
-        res.status(200).json({
-            pagesCount: Math.ceil(total / pageSize),
-            page: pageNumber,
-            pageSize: pageSize,
-            totalCount: total,
-            items: post
-        });
-    }
+    res.status(200).json({
+        pagesCount: Math.ceil(total / pageSize),
+        page: pageNumber,
+        pageSize: pageSize,
+        totalCount: total,
+        items: post
+    });
 }));

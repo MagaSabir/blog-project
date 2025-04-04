@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
-import {blogType, db, errorsArray, postType} from "../../db/db";
-import {blogRepository} from "../../repositories/blog-repository";
+import {errorsArray} from "../../db/db";
+
 import {
     descriptionValidator,
     nameValidator,
@@ -8,15 +8,11 @@ import {
 } from "../../validator/blog-validations";
 import {authMiddleware} from "../../../middlewares/authMiddleware";
 import {blogsService} from "../../domain/blogs-service";
-import {client} from "../../db/mongodb";
 import {
-    blogIdValidator,
     contentValidator,
     shortDescriptionValidator,
     titleValidator
 } from "../../validator/post-validations";
-import {postsService} from "../../domain/posts-service";
-import * as string_decoder from "node:string_decoder";
 
 
 export const blogRoutes = Router()
@@ -33,9 +29,9 @@ export const blogRoutes = Router()
         } = await blogsService.findAllBlogsPagination(pageNumber, pageSize, sortDirection, sortBy, searchNameTerm)
         res.status(200).json({
             pagesCount: Math.ceil(total / pageSize),
-            page:pageNumber,
+            page: pageNumber,
             pageSize: pageSize,
-            totalCount:total,
+            totalCount: total,
             items: post
         })
     })
@@ -88,46 +84,52 @@ export const blogRoutes = Router()
     })
 
 
+    .post('/:id/posts', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, async (req: Request, res: Response): Promise<void> => {
+        //const blog = await blogsService.createPostByBlogId(req.body, req.params)
 
+        const errors = errorsArray(req)
+        if (errors.length) {
+            res.status(400).send({errorsMessages: errors})
+            return
+        }
 
-.post('/:id/posts',authMiddleware,titleValidator, shortDescriptionValidator, contentValidator, async (req: Request, res: Response): Promise<void> => {
-    const blog = await blogsService.createPostByBlogId(req.body, req.params)
+        const blogId = req.params.id as string
 
-    const errors = errorsArray(req)
-    if (errors.length) {
-        res.status(400).send({errorsMessages: errors})
+        const blog = await blogsService.findBlogById(blogId)
+
+        if (!blog) {
+            res.sendStatus(404)
+            return
+        }
+
+        const post = await blogsService.createPostByBlogId(req.body, req.params)
+
+        res.status(201).send(post)
         return
-    }
+    })
 
-    if(!await blogsService.findBlogById(blog.blogId)) {
-        res.sendStatus(404)
-        return
-    }
-    res.status(201).send(await blogsService.createPostByBlogId(req.body, req.params))
-    return
-})
+    .get('/:id/posts', async (req: Request, res: Response) => {
+        const id = req.params.id
+        const pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1
+        const pageSize = req.query.pageSize ? +req.query.pageSize : 10
+        const sortDirection = req.query.sortDirection === 'asc' ? 1 : -1
+        const sortBy = req.query.sortBy || 'createdAt'
+        const {post, total} = await blogsService.getPostsByBlogId(id, pageNumber, pageSize, sortDirection, sortBy)
 
-.get('/:id/posts', async (req: Request, res: Response)  => {
-    const id = req.params.id
-    const pageNumber = req.query.pageNumber ? +req.query.pageNumber : 1
-    const pageSize = req.query.pageSize ? +req.query.pageSize : 10
-    const sortDirection = req.query.sortDirection === 'asc' ? 1 : -1
-    const sortBy = req.query.sortBy || 'createdAt'
-    const {post, total} = await blogsService.getPostsByBlogId(id, pageNumber, pageSize, sortDirection, sortBy)
+        if (!post.length) {
+            res.sendStatus(404)
+            console.log(post)
+            return
+        }
+        res.status(200).json({
+            pagesCount: Math.ceil(total / pageSize),
+            page: pageNumber,
+            pageSize: pageSize,
+            totalCount: total,
+            items: post
+        })
 
-    if(!post.length) {
-        res.sendStatus(404)
-        return
-    }
-    else { res.status(200).json({
-        pagesCount: Math.ceil(total / pageSize),
-        page: pageNumber,
-        pageSize:pageSize,
-        totalCount: total,
-        items: post
-    })}
-
-})
+    })
 
 
 

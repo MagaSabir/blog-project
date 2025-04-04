@@ -8,9 +8,11 @@ export const blogRepository = {
         const filter = searchNameTerm
             ? {name: {$regex: searchNameTerm, $options: 'i'}}
             : {};
-        const total = await client.db('blogPlatform').collection('blogs').countDocuments(filter)
+        const total = await client.db('blogPlatform')
+            .collection('blogs').countDocuments(filter)
 
-        const result = await client.db('blogPlatform').collection<dbBlogType>('blogs')
+        const result = await client.db('blogPlatform')
+            .collection<dbBlogType>('blogs')
             .find(filter)
             .skip((page - 1) * limit)
             .limit(limit)
@@ -51,7 +53,8 @@ export const blogRepository = {
     },
 
     async deleteById(id: string): Promise<blogType[] | boolean> {
-        const result = await client.db('blogPlatform').collection<dbBlogType[]>('blogs').deleteOne({_id: new ObjectId(id)})
+        const result = await client.db('blogPlatform')
+            .collection<dbBlogType[]>('blogs').deleteOne({_id: new ObjectId(id)})
         return result.deletedCount === 1
     },
 
@@ -61,8 +64,9 @@ export const blogRepository = {
         return {id: _id.toString(), ...rest}
     },
 
-    async getPostsByBlogId(id: string,page: number, limit: number, sortDirection: any, sortBy: any) {
-        const total = await client.db('blogPlatform').collection('posts').countDocuments({blogId: id})
+    async getPostsByBlogId(id: string, page: number, limit: number, sortDirection: any, sortBy: any) {
+        const total = await client.db('blogPlatform')
+            .collection('posts').countDocuments({blogId: id})
 
         const result = await client.db('blogPlatform').collection<dbBlogType>('posts')
             .find({blogId: id})

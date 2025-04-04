@@ -5,7 +5,10 @@ import {ObjectId} from "mongodb";
 
 export const blogsService = {
     async findAllBlogsPagination(page: number, limit: number, sortDirection: any, sortBy: any, searchNameTerm: any): Promise<any> {
-        const {total, result} = await blogRepository.findAllBlogsPagination(page, limit, sortDirection, sortBy, searchNameTerm)
+        const {
+            total,
+            result
+        } = await blogRepository.findAllBlogsPagination(page, limit, sortDirection, sortBy, searchNameTerm)
         // @ts-ignore
         const post = result.map(({_id, ...rest}) => ({
             id: _id!.toString(), ...rest
@@ -53,23 +56,25 @@ export const blogsService = {
 
     },
 
-    async createPostByBlogId(body: newPostType, param:any): Promise<any> {
-         const blog = (await blogRepository.findAllBlogs()).find((el => el.name))
-
+    async createPostByBlogId(body: newPostType, param: any): Promise<any> {
+        const blog = (await blogRepository.findBlogById(param))
         const newPost = {
             title: body.title,
             shortDescription: body.shortDescription,
             content: body.content,
             blogId: param.id,
-            blogName: blog!.name,
+            blogName: blog.name,
             createdAt: new Date().toISOString()
         }
         return await blogRepository.createPostByBlogId(newPost)
     },
 
-    async getPostsByBlogId(id: string,page: number, limit: number, sortDirection: any, sortBy: any): Promise<any> {
+    async getPostsByBlogId(id: string, page: number, limit: number, sortDirection: any, sortBy: any): Promise<any> {
 
         const {result, total} = await blogRepository.getPostsByBlogId(id, page, limit, sortDirection, sortBy)
+        if (!result) {
+            return null
+        }
 
         const post = result.map(({_id, ...rest}) => ({
             id: _id!.toString(), ...rest
