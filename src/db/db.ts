@@ -1,4 +1,3 @@
-import {strict} from "node:assert";
 import {FieldValidationError, validationResult} from "express-validator";
 import {ObjectId} from "mongodb";
 
@@ -8,14 +7,15 @@ type blogDbType = {
 }
 
 export type dbBlogType = {
-    _id?: string | undefined,
+    _id: ObjectId,
     name: string,
     description: string,
     websiteUrl: string
 }
 
+
 export type blogType = {
-    id?: string | undefined,
+    id: string
     name: string,
     description: string,
     websiteUrl: string

@@ -4,25 +4,29 @@ import {ObjectId} from "mongodb";
 
 
 export const blogRepository = {
-    async findAllBlogsPagination(page: number, limit: number, sortDirection: any, sortBy: any, searchNameTerm: any): Promise<any> {
+    async findAllBlogsPagination(pageNumber: number, pageSize: number, sortDirection: 1 | -1, sortBy: string, searchNameTerm: string): Promise<{
+        totalCount: number;
+        blogs: dbBlogType[]
+    }> {
         const filter = searchNameTerm
             ? {name: {$regex: searchNameTerm, $options: 'i'}}
             : {};
-        const total = await client.db('blogPlatform')
+        const totalCount = await client.db('blogPlatform')
             .collection('blogs').countDocuments(filter)
 
-        const result = await client.db('blogPlatform')
+        const blogs = await client.db('blogPlatform')
             .collection<dbBlogType>('blogs')
             .find(filter)
-            .skip((page - 1) * limit)
-            .limit(limit)
+            .skip((pageNumber - 1) * pageSize)
+            .limit(pageSize)
             .sort({[sortBy]: sortDirection}).toArray()
-        return {total, result}
+
+        return {totalCount, blogs}
     },
 
-    async findAllBlogs(): Promise<blogType[]> {
+    async findAllBlogs(): Promise<dbBlogType[]> {
         return await client.db('blogPlatform').collection<dbBlogType>('blogs')
-            .find({}).toArray()
+            .find().toArray()
     },
 
 

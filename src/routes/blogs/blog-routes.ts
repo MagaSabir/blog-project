@@ -24,15 +24,16 @@ export const blogRoutes = Router()
         const searchNameTerm = req.query.searchNameTerm
         const sortBy = req.query.sortBy || 'createdAt'
         const {
-            total,
-            post
+            totalCount,
+            items
         } = await blogsService.findAllBlogsPagination(pageNumber, pageSize, sortDirection, sortBy, searchNameTerm)
+
         res.status(200).json({
-            pagesCount: Math.ceil(total / pageSize),
+            pagesCount: Math.ceil(totalCount / pageSize),
             page: pageNumber,
-            pageSize: pageSize,
-            totalCount: total,
-            items: post
+            pageSize,
+            totalCount,
+            items
         })
     })
 
@@ -85,14 +86,11 @@ export const blogRoutes = Router()
 
 
     .post('/:id/posts', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, async (req: Request, res: Response): Promise<void> => {
-        //const blog = await blogsService.createPostByBlogId(req.body, req.params)
-
         const errors = errorsArray(req)
         if (errors.length) {
             res.status(400).send({errorsMessages: errors})
             return
         }
-
         const blogId = req.params.id as string
 
         const blog = await blogsService.findBlogById(blogId)

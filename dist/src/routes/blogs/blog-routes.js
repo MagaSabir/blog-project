@@ -23,13 +23,13 @@ exports.blogRoutes = (0, express_1.Router)()
     const sortDirection = req.query.sortDirection === 'asc' ? 1 : -1;
     const searchNameTerm = req.query.searchNameTerm;
     const sortBy = req.query.sortBy || 'createdAt';
-    const { total, post } = yield blogs_service_1.blogsService.findAllBlogsPagination(pageNumber, pageSize, sortDirection, sortBy, searchNameTerm);
+    const { totalCount, items } = yield blogs_service_1.blogsService.findAllBlogsPagination(pageNumber, pageSize, sortDirection, sortBy, searchNameTerm);
     res.status(200).json({
-        pagesCount: Math.ceil(total / pageSize),
+        pagesCount: Math.ceil(totalCount / pageSize),
         page: pageNumber,
-        pageSize: pageSize,
-        totalCount: total,
-        items: post
+        pageSize,
+        totalCount,
+        items
     });
 }))
     .get('/:id', blog_validations_1.nameValidator, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -74,7 +74,6 @@ exports.blogRoutes = (0, express_1.Router)()
     res.sendStatus(404);
 }))
     .post('/:id/posts', authMiddleware_1.authMiddleware, post_validations_1.titleValidator, post_validations_1.shortDescriptionValidator, post_validations_1.contentValidator, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //const blog = await blogsService.createPostByBlogId(req.body, req.params)
     const errors = (0, db_1.errorsArray)(req);
     if (errors.length) {
         res.status(400).send({ errorsMessages: errors });

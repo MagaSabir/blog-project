@@ -24,26 +24,26 @@ exports.blogRepository = void 0;
 const mongodb_1 = require("../db/mongodb");
 const mongodb_2 = require("mongodb");
 exports.blogRepository = {
-    findAllBlogsPagination(page, limit, sortDirection, sortBy, searchNameTerm) {
+    findAllBlogsPagination(pageNumber, pageSize, sortDirection, sortBy, searchNameTerm) {
         return __awaiter(this, void 0, void 0, function* () {
             const filter = searchNameTerm
                 ? { name: { $regex: searchNameTerm, $options: 'i' } }
                 : {};
-            const total = yield mongodb_1.client.db('blogPlatform')
+            const totalCount = yield mongodb_1.client.db('blogPlatform')
                 .collection('blogs').countDocuments(filter);
-            const result = yield mongodb_1.client.db('blogPlatform')
+            const blogs = yield mongodb_1.client.db('blogPlatform')
                 .collection('blogs')
                 .find(filter)
-                .skip((page - 1) * limit)
-                .limit(limit)
+                .skip((pageNumber - 1) * pageSize)
+                .limit(pageSize)
                 .sort({ [sortBy]: sortDirection }).toArray();
-            return { total, result };
+            return { totalCount, blogs };
         });
     },
     findAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield mongodb_1.client.db('blogPlatform').collection('blogs')
-                .find({}).toArray();
+                .find().toArray();
         });
     },
     findBlogById(id) {

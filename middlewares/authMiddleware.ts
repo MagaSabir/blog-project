@@ -8,6 +8,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         res.sendStatus(401)
         return
     }
+
     const [authType, token] = auth.split(' ')
     const [login, password] = SETTINGS.ADMIN_AUTH.split(':')
     if (authType !== 'Basic') {

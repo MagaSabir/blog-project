@@ -1,4 +1,4 @@
-import {Router, Request, Response, NextFunction} from "express";
+import {Router, Request, Response} from "express";
 import {postRepository} from "../../repositories/post-repository";
 import {
     blogIdValidator,
@@ -9,9 +9,6 @@ import {
 import {authMiddleware} from "../../../middlewares/authMiddleware";
 import {errorsArray, postType} from "../../db/db";
 import {postsService} from "../../domain/posts-service";
-import {client} from "../../db/mongodb";
-import {body} from "express-validator";
-import {blogsService} from "../../domain/blogs-service";
 
 
 export const postsRoutes = Router()
@@ -29,15 +26,15 @@ postsRoutes
 
         res.status(200).json({
             pagesCount: Math.ceil(total / pageSize),
-            page:pageNumber,
+            page: pageNumber,
             pageSize: pageSize,
-            totalCount:total,
+            totalCount: total,
             items: post
         })
 
     })
     .get('/:id', async (req: Request, res: Response) => {
-        const post = await postsService.getPostById(req.params.id)
+        const post: postType | null = await postsService.getPostById(req.params.id)
         if (post) {
             res.status(200).send(post)
             return
@@ -47,7 +44,7 @@ postsRoutes
     })
 
     .delete('/:id', authMiddleware, async (req: Request, res: Response) => {
-        const blog = await postsService.deletePostById(req.params.id)
+        const blog: postType | boolean = await postsService.deletePostById(req.params.id)
         if (blog) {
             res.sendStatus(204)
             return
@@ -55,7 +52,7 @@ postsRoutes
         res.sendStatus(404)
     })
 
-    .post('/', blogIdValidator, authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, async (req: Request, res: Response,) => {
+    .post('/', blogIdValidator, authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, async (req: Request, res: Response) => {
         const errors = errorsArray(req)
         if (errors.length) {
             res.status(400).send({errorsMessages: errors})
@@ -66,8 +63,8 @@ postsRoutes
     })
 
 
-    .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, blogIdValidator, async (req: Request, res: Response) => {
-        const updatedPost = await postRepository.updatePost(req.params.id, req.body)
+    .put('/:id', authMiddleware, titleValidator, shortDescriptionValidator, contentValidator, blogIdValidator, async (req: Request, res: Response): Promise<void> => {
+        const updatedPost: postType[] | boolean = await postRepository.updatePost(req.params.id, req.body)
         const errors = errorsArray(req)
         if (errors.length) {
             res.status(400).send({errorsMessages: errors})

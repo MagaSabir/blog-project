@@ -4,16 +4,23 @@ import {ObjectId} from "mongodb";
 
 
 export const blogsService = {
-    async findAllBlogsPagination(page: number, limit: number, sortDirection: any, sortBy: any, searchNameTerm: any): Promise<any> {
-        const {
-            total,
-            result
-        } = await blogRepository.findAllBlogsPagination(page, limit, sortDirection, sortBy, searchNameTerm)
-        // @ts-ignore
-        const post = result.map(({_id, ...rest}) => ({
-            id: _id!.toString(), ...rest
-        }))
-        return {total, post}
+    async findAllBlogsPagination(pageNumber: number, pageSize: number, sortDirection: 1 | -1, sortBy: any, searchNameTerm: any): Promise<{
+        totalCount: number;
+        items: blogType[]
+    }> {
+
+        const {totalCount, blogs} = await blogRepository.findAllBlogsPagination(
+            pageNumber,
+            pageSize,
+            sortDirection,
+            sortBy,
+            searchNameTerm
+        );
+        const items = blogs.map(({_id, ...rest}) => ({
+            id: _id.toString(),
+            ...rest
+        }));
+        return {totalCount, items}
     },
 
 

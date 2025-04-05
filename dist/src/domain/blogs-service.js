@@ -24,15 +24,14 @@ exports.blogsService = void 0;
 const blog_repository_1 = require("../repositories/blog-repository");
 const mongodb_1 = require("mongodb");
 exports.blogsService = {
-    findAllBlogsPagination(page, limit, sortDirection, sortBy, searchNameTerm) {
+    findAllBlogsPagination(pageNumber, pageSize, sortDirection, sortBy, searchNameTerm) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { total, result } = yield blog_repository_1.blogRepository.findAllBlogsPagination(page, limit, sortDirection, sortBy, searchNameTerm);
-            // @ts-ignore
-            const post = result.map((_a) => {
+            const { totalCount, blogs } = yield blog_repository_1.blogRepository.findAllBlogsPagination(pageNumber, pageSize, sortDirection, sortBy, searchNameTerm);
+            const items = blogs.map((_a) => {
                 var { _id } = _a, rest = __rest(_a, ["_id"]);
                 return (Object.assign({ id: _id.toString() }, rest));
             });
-            return { total, post };
+            return { totalCount, items };
         });
     },
     findBlogById(id) {
@@ -77,8 +76,6 @@ exports.blogsService = {
     },
     createPostByBlogId(body, param) {
         return __awaiter(this, void 0, void 0, function* () {
-            //todo fix
-            // const blog = (await blogRepository.findAllBlogs()).find((el => el.name))
             const blog = (yield blog_repository_1.blogRepository.findBlogById(param));
             const newPost = {
                 title: body.title,
